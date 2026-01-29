@@ -1,0 +1,555 @@
+
+======================================================================
+Session: 20260112_223719
+Started: 2026-01-12T22:37:19.304411
+======================================================================
+
+[22:37:21] PLANNING: {"timestamp": 1768275441.8941557, "type": "planning", "algorithm": "astar", "processing_time": 0.001943826675415039, "path_length": 81, "success": true}
+[22:37:21] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[22:37:21] SEGMENTATION: {"timestamp": 1768275441.9636166, "type": "segmentation", "processing_time": 0.06423616409301758, "safe_percentage": 21.02, "count": 1}
+[22:37:21] ERROR: replanning_failed: Cannot find alternative path
+[22:37:21] NAVIGATION_END: FAILED - Path: 11.31m, Time: 0.1s
+
+======================================================================
+Session: 20260112_224505
+Started: 2026-01-12T22:45:05.822120
+======================================================================
+
+[22:45:08] PLANNING: {"timestamp": 1768275908.5869772, "type": "planning", "algorithm": "astar", "processing_time": 0.0028154850006103516, "path_length": 81, "success": true}
+
+======================================================================
+Session: 20260112_225247
+Started: 2026-01-12T22:52:47.512502
+======================================================================
+
+[22:52:50] PLANNING: {"timestamp": 1768276370.2469082, "type": "planning", "algorithm": "astar", "processing_time": 0.003510713577270508, "path_length": 81, "success": true}
+
+======================================================================
+Session: 20260117_154605
+Started: 2026-01-17T15:46:05.878615
+======================================================================
+
+[15:46:16] PLANNING: {"timestamp": 1768682776.2872229, "type": "planning", "algorithm": "astar", "processing_time": 0.0030260086059570312, "path_length": 81, "success": true}
+
+======================================================================
+Session: 20260117_160812
+Started: 2026-01-17T16:08:12.662008
+======================================================================
+
+[16:08:22] PLANNING: {"timestamp": 1768684102.8836906, "type": "planning", "algorithm": "astar", "processing_time": 0.0064067840576171875, "path_length": 81, "success": true}
+[16:08:23] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[16:08:23] SEGMENTATION: {"timestamp": 1768684103.220623, "type": "segmentation", "processing_time": 0.016890764236450195, "safe_percentage": 0.09, "count": 1}
+[16:08:23] ERROR: replanning_failed: Cannot find alternative path
+[16:08:23] NAVIGATION_END: FAILED - Path: 11.31m, Time: 0.1s
+
+======================================================================
+Session: 20260117_160834
+Started: 2026-01-17T16:08:34.737910
+======================================================================
+
+[16:08:44] PLANNING: {"timestamp": 1768684124.9232194, "type": "planning", "algorithm": "astar", "processing_time": 0.004526853561401367, "path_length": 81, "success": true}
+[16:08:46] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[16:08:46] SEGMENTATION: {"timestamp": 1768684126.8860183, "type": "segmentation", "processing_time": 0.005460500717163086, "safe_percentage": 0.05, "count": 1}
+[16:08:46] ERROR: replanning_failed: Cannot find alternative path
+[16:08:46] NAVIGATION_END: FAILED - Path: 11.31m, Time: 0.1s
+
+======================================================================
+Session: 20260117_160902
+Started: 2026-01-17T16:09:02.724985
+======================================================================
+
+[16:09:12] PLANNING: {"timestamp": 1768684152.9299822, "type": "planning", "algorithm": "astar", "processing_time": 0.0039052963256835938, "path_length": 81, "success": true}
+[16:09:21] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[16:09:21] SEGMENTATION: {"timestamp": 1768684161.952706, "type": "segmentation", "processing_time": 0.007765531539916992, "safe_percentage": 0.33999999999999997, "count": 1}
+[16:09:21] ERROR: replanning_failed: Cannot find alternative path
+[16:09:21] NAVIGATION_END: FAILED - Path: 11.31m, Time: 0.1s
+
+======================================================================
+Session: 20260128_183021
+Started: 2026-01-28T18:30:21.474628
+======================================================================
+
+
+======================================================================
+Session: 20260128_183223
+Started: 2026-01-28T18:32:23.172831
+======================================================================
+
+
+======================================================================
+Session: 20260128_185253
+Started: 2026-01-28T18:52:53.417989
+======================================================================
+
+
+======================================================================
+Session: 20260128_185356
+Started: 2026-01-28T18:53:56.504919
+======================================================================
+
+[18:53:59] PLANNING: {"timestamp": 1769644439.0700045, "type": "planning", "algorithm": "astar", "processing_time": 0.0030608177185058594, "path_length": 81, "success": true}
+[18:54:00] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[18:54:00] SEGMENTATION: {"timestamp": 1769644440.8565924, "type": "segmentation", "processing_time": 0.028837203979492188, "safe_percentage": 92.96, "count": 1}
+[18:54:00] SEGMENTATION: {"timestamp": 1769644440.9730847, "type": "segmentation", "processing_time": 0.0048711299896240234, "safe_percentage": 92.96, "count": 2}
+[18:54:01] SEGMENTATION: {"timestamp": 1769644441.1798518, "type": "segmentation", "processing_time": 0.006101846694946289, "safe_percentage": 92.96, "count": 3}
+[18:54:01] SEGMENTATION: {"timestamp": 1769644441.380445, "type": "segmentation", "processing_time": 0.0054781436920166016, "safe_percentage": 92.96, "count": 4}
+[18:54:01] SEGMENTATION: {"timestamp": 1769644441.5952299, "type": "segmentation", "processing_time": 0.005403280258178711, "safe_percentage": 92.96, "count": 5}
+[18:54:01] SEGMENTATION: {"timestamp": 1769644441.7819479, "type": "segmentation", "processing_time": 0.005037069320678711, "safe_percentage": 92.96, "count": 6}
+[18:54:01] SEGMENTATION: {"timestamp": 1769644441.9982145, "type": "segmentation", "processing_time": 0.007697343826293945, "safe_percentage": 92.96, "count": 7}
+[18:54:02] SEGMENTATION: {"timestamp": 1769644442.1878216, "type": "segmentation", "processing_time": 0.005202770233154297, "safe_percentage": 92.96, "count": 8}
+[18:54:02] SEGMENTATION: {"timestamp": 1769644442.3916476, "type": "segmentation", "processing_time": 0.005969047546386719, "safe_percentage": 92.96, "count": 9}
+[18:54:02] SEGMENTATION: {"timestamp": 1769644442.5889487, "type": "segmentation", "processing_time": 0.00666356086730957, "safe_percentage": 92.96, "count": 10}
+[18:54:02] SEGMENTATION: {"timestamp": 1769644442.787923, "type": "segmentation", "processing_time": 0.0065500736236572266, "safe_percentage": 92.96, "count": 11}
+[18:54:02] SEGMENTATION: {"timestamp": 1769644442.9839187, "type": "segmentation", "processing_time": 0.007854938507080078, "safe_percentage": 92.96, "count": 12}
+[18:54:03] SEGMENTATION: {"timestamp": 1769644443.183527, "type": "segmentation", "processing_time": 0.006337642669677734, "safe_percentage": 92.96, "count": 13}
+[18:54:03] SEGMENTATION: {"timestamp": 1769644443.3824806, "type": "segmentation", "processing_time": 0.0072023868560791016, "safe_percentage": 92.96, "count": 14}
+[18:54:03] SEGMENTATION: {"timestamp": 1769644443.5887668, "type": "segmentation", "processing_time": 0.0075647830963134766, "safe_percentage": 92.96, "count": 15}
+[18:54:03] SEGMENTATION: {"timestamp": 1769644443.782464, "type": "segmentation", "processing_time": 0.007289409637451172, "safe_percentage": 92.96, "count": 16}
+[18:54:03] SEGMENTATION: {"timestamp": 1769644443.988364, "type": "segmentation", "processing_time": 0.007693290710449219, "safe_percentage": 92.96, "count": 17}
+[18:54:04] SEGMENTATION: {"timestamp": 1769644444.1961713, "type": "segmentation", "processing_time": 0.00677037239074707, "safe_percentage": 92.96, "count": 18}
+[18:54:04] SEGMENTATION: {"timestamp": 1769644444.388944, "type": "segmentation", "processing_time": 0.0072820186614990234, "safe_percentage": 92.96, "count": 19}
+[18:54:04] SEGMENTATION: {"timestamp": 1769644444.5845957, "type": "segmentation", "processing_time": 0.0038361549377441406, "safe_percentage": 92.96, "count": 20}
+[18:54:04] SEGMENTATION: {"timestamp": 1769644444.8013175, "type": "segmentation", "processing_time": 0.005955219268798828, "safe_percentage": 92.96, "count": 21}
+[18:54:04] SEGMENTATION: {"timestamp": 1769644444.9898696, "type": "segmentation", "processing_time": 0.006648063659667969, "safe_percentage": 92.96, "count": 22}
+[18:54:05] SEGMENTATION: {"timestamp": 1769644445.188946, "type": "segmentation", "processing_time": 0.005780935287475586, "safe_percentage": 92.96, "count": 23}
+[18:54:05] SEGMENTATION: {"timestamp": 1769644445.3963702, "type": "segmentation", "processing_time": 0.0055239200592041016, "safe_percentage": 92.96, "count": 24}
+[18:54:05] SEGMENTATION: {"timestamp": 1769644445.5976696, "type": "segmentation", "processing_time": 0.00603032112121582, "safe_percentage": 92.96, "count": 25}
+[18:54:05] SEGMENTATION: {"timestamp": 1769644445.791302, "type": "segmentation", "processing_time": 0.006501436233520508, "safe_percentage": 92.96, "count": 26}
+[18:54:06] SEGMENTATION: {"timestamp": 1769644446.003982, "type": "segmentation", "processing_time": 0.006593465805053711, "safe_percentage": 92.96, "count": 27}
+[18:54:06] SEGMENTATION: {"timestamp": 1769644446.195588, "type": "segmentation", "processing_time": 0.00597381591796875, "safe_percentage": 92.96, "count": 28}
+[18:54:06] SEGMENTATION: {"timestamp": 1769644446.394225, "type": "segmentation", "processing_time": 0.005332231521606445, "safe_percentage": 92.96, "count": 29}
+[18:54:06] SEGMENTATION: {"timestamp": 1769644446.603394, "type": "segmentation", "processing_time": 0.005820274353027344, "safe_percentage": 92.96, "count": 30}
+[18:54:06] SEGMENTATION: {"timestamp": 1769644446.7919016, "type": "segmentation", "processing_time": 0.0054895877838134766, "safe_percentage": 92.96, "count": 31}
+[18:54:06] SEGMENTATION: {"timestamp": 1769644446.9896567, "type": "segmentation", "processing_time": 0.005956172943115234, "safe_percentage": 92.96, "count": 32}
+[18:54:07] SEGMENTATION: {"timestamp": 1769644447.203157, "type": "segmentation", "processing_time": 0.005713224411010742, "safe_percentage": 92.96, "count": 33}
+[18:54:07] SEGMENTATION: {"timestamp": 1769644447.4056344, "type": "segmentation", "processing_time": 0.004082679748535156, "safe_percentage": 92.96, "count": 34}
+[18:54:07] SEGMENTATION: {"timestamp": 1769644447.6050317, "type": "segmentation", "processing_time": 0.006112337112426758, "safe_percentage": 92.96, "count": 35}
+[18:54:07] SEGMENTATION: {"timestamp": 1769644447.8024843, "type": "segmentation", "processing_time": 0.00597381591796875, "safe_percentage": 92.96, "count": 36}
+[18:54:07] SEGMENTATION: {"timestamp": 1769644447.9941642, "type": "segmentation", "processing_time": 0.005509138107299805, "safe_percentage": 92.96, "count": 37}
+[18:54:08] SEGMENTATION: {"timestamp": 1769644448.1997132, "type": "segmentation", "processing_time": 0.005223512649536133, "safe_percentage": 92.96, "count": 38}
+[18:54:08] SEGMENTATION: {"timestamp": 1769644448.4056933, "type": "segmentation", "processing_time": 0.005194425582885742, "safe_percentage": 92.96, "count": 39}
+[18:54:08] SEGMENTATION: {"timestamp": 1769644448.5955083, "type": "segmentation", "processing_time": 0.005235910415649414, "safe_percentage": 92.96, "count": 40}
+[18:54:08] SEGMENTATION: {"timestamp": 1769644448.7967644, "type": "segmentation", "processing_time": 0.006301164627075195, "safe_percentage": 92.96, "count": 41}
+[18:54:08] SEGMENTATION: {"timestamp": 1769644448.9972565, "type": "segmentation", "processing_time": 0.006711244583129883, "safe_percentage": 92.96, "count": 42}
+[18:54:09] SEGMENTATION: {"timestamp": 1769644449.197241, "type": "segmentation", "processing_time": 0.00709080696105957, "safe_percentage": 92.96, "count": 43}
+[18:54:09] SEGMENTATION: {"timestamp": 1769644449.4036894, "type": "segmentation", "processing_time": 0.008777618408203125, "safe_percentage": 92.96, "count": 44}
+[18:54:09] SEGMENTATION: {"timestamp": 1769644449.6132274, "type": "segmentation", "processing_time": 0.006728649139404297, "safe_percentage": 92.96, "count": 45}
+[18:54:09] SEGMENTATION: {"timestamp": 1769644449.8006916, "type": "segmentation", "processing_time": 0.004363298416137695, "safe_percentage": 92.96, "count": 46}
+[18:54:09] SEGMENTATION: {"timestamp": 1769644449.9959674, "type": "segmentation", "processing_time": 0.003916740417480469, "safe_percentage": 92.96, "count": 47}
+[18:54:10] SEGMENTATION: {"timestamp": 1769644450.2030976, "type": "segmentation", "processing_time": 0.0056111812591552734, "safe_percentage": 92.96, "count": 48}
+[18:54:10] SEGMENTATION: {"timestamp": 1769644450.4030771, "type": "segmentation", "processing_time": 0.005622148513793945, "safe_percentage": 92.96, "count": 49}
+[18:54:10] SEGMENTATION: {"timestamp": 1769644450.6080766, "type": "segmentation", "processing_time": 0.005748271942138672, "safe_percentage": 92.96, "count": 50}
+[18:54:10] SEGMENTATION: {"timestamp": 1769644450.8053672, "type": "segmentation", "processing_time": 0.003779172897338867, "safe_percentage": 92.96, "count": 51}
+[18:54:11] SEGMENTATION: {"timestamp": 1769644451.0284176, "type": "segmentation", "processing_time": 0.005419254302978516, "safe_percentage": 92.96, "count": 52}
+[18:54:11] SEGMENTATION: {"timestamp": 1769644451.2081335, "type": "segmentation", "processing_time": 0.007214069366455078, "safe_percentage": 92.96, "count": 53}
+[18:54:11] SEGMENTATION: {"timestamp": 1769644451.4148362, "type": "segmentation", "processing_time": 0.00574040412902832, "safe_percentage": 92.96, "count": 54}
+[18:54:11] SEGMENTATION: {"timestamp": 1769644451.6197736, "type": "segmentation", "processing_time": 0.00717616081237793, "safe_percentage": 92.96, "count": 55}
+[18:54:11] SEGMENTATION: {"timestamp": 1769644451.8174405, "type": "segmentation", "processing_time": 0.007894754409790039, "safe_percentage": 92.96, "count": 56}
+[18:54:12] SEGMENTATION: {"timestamp": 1769644452.015716, "type": "segmentation", "processing_time": 0.005995035171508789, "safe_percentage": 92.96, "count": 57}
+[18:54:12] SEGMENTATION: {"timestamp": 1769644452.2019026, "type": "segmentation", "processing_time": 0.004872322082519531, "safe_percentage": 92.96, "count": 58}
+[18:54:12] SEGMENTATION: {"timestamp": 1769644452.4218304, "type": "segmentation", "processing_time": 0.00719141960144043, "safe_percentage": 92.96, "count": 59}
+[18:54:12] SEGMENTATION: {"timestamp": 1769644452.6145947, "type": "segmentation", "processing_time": 0.007840633392333984, "safe_percentage": 92.96, "count": 60}
+[18:54:12] SEGMENTATION: {"timestamp": 1769644452.8284895, "type": "segmentation", "processing_time": 0.014636754989624023, "safe_percentage": 92.96, "count": 61}
+[18:54:13] SEGMENTATION: {"timestamp": 1769644453.0155723, "type": "segmentation", "processing_time": 0.0043942928314208984, "safe_percentage": 92.96, "count": 62}
+[18:54:13] SEGMENTATION: {"timestamp": 1769644453.2209501, "type": "segmentation", "processing_time": 0.009191036224365234, "safe_percentage": 92.96, "count": 63}
+[18:54:13] SEGMENTATION: {"timestamp": 1769644453.4207523, "type": "segmentation", "processing_time": 0.006954669952392578, "safe_percentage": 92.96, "count": 64}
+[18:54:13] SEGMENTATION: {"timestamp": 1769644453.6110406, "type": "segmentation", "processing_time": 0.005703926086425781, "safe_percentage": 92.96, "count": 65}
+[18:54:13] SEGMENTATION: {"timestamp": 1769644453.8170998, "type": "segmentation", "processing_time": 0.005946636199951172, "safe_percentage": 92.96, "count": 66}
+[18:54:14] SEGMENTATION: {"timestamp": 1769644454.0250301, "type": "segmentation", "processing_time": 0.007517099380493164, "safe_percentage": 92.96, "count": 67}
+[18:54:14] SEGMENTATION: {"timestamp": 1769644454.2140636, "type": "segmentation", "processing_time": 0.007173299789428711, "safe_percentage": 92.96, "count": 68}
+[18:54:14] SEGMENTATION: {"timestamp": 1769644454.4113672, "type": "segmentation", "processing_time": 0.004972219467163086, "safe_percentage": 92.96, "count": 69}
+[18:54:14] SEGMENTATION: {"timestamp": 1769644454.6266108, "type": "segmentation", "processing_time": 0.004816532135009766, "safe_percentage": 92.96, "count": 70}
+[18:54:14] SEGMENTATION: {"timestamp": 1769644454.813836, "type": "segmentation", "processing_time": 0.006284236907958984, "safe_percentage": 92.96, "count": 71}
+[18:54:15] SEGMENTATION: {"timestamp": 1769644455.009975, "type": "segmentation", "processing_time": 0.004545450210571289, "safe_percentage": 92.96, "count": 72}
+[18:54:15] SEGMENTATION: {"timestamp": 1769644455.2222884, "type": "segmentation", "processing_time": 0.007197380065917969, "safe_percentage": 92.96, "count": 73}
+[18:54:15] SEGMENTATION: {"timestamp": 1769644455.4152555, "type": "segmentation", "processing_time": 0.006713390350341797, "safe_percentage": 92.96, "count": 74}
+[18:54:15] SEGMENTATION: {"timestamp": 1769644455.6168575, "type": "segmentation", "processing_time": 0.006877422332763672, "safe_percentage": 92.96, "count": 75}
+[18:54:15] SEGMENTATION: {"timestamp": 1769644455.8236647, "type": "segmentation", "processing_time": 0.007658958435058594, "safe_percentage": 92.96, "count": 76}
+[18:54:16] SEGMENTATION: {"timestamp": 1769644456.0210066, "type": "segmentation", "processing_time": 0.00793766975402832, "safe_percentage": 92.96, "count": 77}
+[18:54:16] SEGMENTATION: {"timestamp": 1769644456.2213323, "type": "segmentation", "processing_time": 0.007236003875732422, "safe_percentage": 92.96, "count": 78}
+[18:54:16] SEGMENTATION: {"timestamp": 1769644456.4312286, "type": "segmentation", "processing_time": 0.0065915584564208984, "safe_percentage": 92.96, "count": 79}
+[18:54:16] SEGMENTATION: {"timestamp": 1769644456.6223738, "type": "segmentation", "processing_time": 0.006750345230102539, "safe_percentage": 92.96, "count": 80}
+[18:54:16] NAVIGATION_END: SUCCESS - Path: 11.31m, Time: 15.9s
+
+======================================================================
+Session: 20260128_185717
+Started: 2026-01-28T18:57:17.997133
+======================================================================
+
+[18:57:20] PLANNING: {"timestamp": 1769644640.749024, "type": "planning", "algorithm": "astar", "processing_time": 0.001552581787109375, "path_length": 81, "success": true}
+[18:57:21] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[18:57:22] SEGMENTATION: {"timestamp": 1769644642.0345886, "type": "segmentation", "processing_time": 0.014786005020141602, "safe_percentage": 92.80000000000001, "count": 1}
+[18:57:22] ERROR: replanning_failed: Cannot find alternative path
+[18:57:22] NAVIGATION_END: FAILED - Path: 11.31m, Time: 0.1s
+
+======================================================================
+Session: 20260128_185919
+Started: 2026-01-28T18:59:19.092513
+======================================================================
+
+[18:59:21] PLANNING: {"timestamp": 1769644761.7007668, "type": "planning", "algorithm": "astar", "processing_time": 0.0022928714752197266, "path_length": 81, "success": true}
+[18:59:27] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[18:59:27] SEGMENTATION: {"timestamp": 1769644767.5787747, "type": "segmentation", "processing_time": 0.006666660308837891, "safe_percentage": 92.80000000000001, "count": 1}
+[18:59:27] SEGMENTATION: {"timestamp": 1769644767.7565303, "type": "segmentation", "processing_time": 0.006824493408203125, "safe_percentage": 92.80000000000001, "count": 2}
+[18:59:27] SEGMENTATION: {"timestamp": 1769644767.9434352, "type": "segmentation", "processing_time": 0.005474090576171875, "safe_percentage": 92.80000000000001, "count": 3}
+[18:59:28] SEGMENTATION: {"timestamp": 1769644768.1406934, "type": "segmentation", "processing_time": 0.0057621002197265625, "safe_percentage": 92.80000000000001, "count": 4}
+[18:59:28] SEGMENTATION: {"timestamp": 1769644768.3453686, "type": "segmentation", "processing_time": 0.007567882537841797, "safe_percentage": 92.80000000000001, "count": 5}
+[18:59:28] SEGMENTATION: {"timestamp": 1769644768.5585792, "type": "segmentation", "processing_time": 0.008151769638061523, "safe_percentage": 92.80000000000001, "count": 6}
+[18:59:28] SEGMENTATION: {"timestamp": 1769644768.753406, "type": "segmentation", "processing_time": 0.0057697296142578125, "safe_percentage": 92.80000000000001, "count": 7}
+[18:59:28] SEGMENTATION: {"timestamp": 1769644768.94328, "type": "segmentation", "processing_time": 0.00616455078125, "safe_percentage": 92.80000000000001, "count": 8}
+[18:59:29] SEGMENTATION: {"timestamp": 1769644769.1458514, "type": "segmentation", "processing_time": 0.0055637359619140625, "safe_percentage": 92.80000000000001, "count": 9}
+[18:59:29] SEGMENTATION: {"timestamp": 1769644769.3554008, "type": "segmentation", "processing_time": 0.005586385726928711, "safe_percentage": 92.80000000000001, "count": 10}
+[18:59:29] SEGMENTATION: {"timestamp": 1769644769.5503976, "type": "segmentation", "processing_time": 0.006190776824951172, "safe_percentage": 92.80000000000001, "count": 11}
+[18:59:29] SEGMENTATION: {"timestamp": 1769644769.7616215, "type": "segmentation", "processing_time": 0.005666971206665039, "safe_percentage": 92.80000000000001, "count": 12}
+[18:59:29] SEGMENTATION: {"timestamp": 1769644769.956715, "type": "segmentation", "processing_time": 0.005784273147583008, "safe_percentage": 92.80000000000001, "count": 13}
+[18:59:30] SEGMENTATION: {"timestamp": 1769644770.1535103, "type": "segmentation", "processing_time": 0.005570173263549805, "safe_percentage": 92.80000000000001, "count": 14}
+[18:59:30] SEGMENTATION: {"timestamp": 1769644770.3476095, "type": "segmentation", "processing_time": 0.0072193145751953125, "safe_percentage": 92.80000000000001, "count": 15}
+[18:59:30] SEGMENTATION: {"timestamp": 1769644770.5614564, "type": "segmentation", "processing_time": 0.008690834045410156, "safe_percentage": 92.80000000000001, "count": 16}
+[18:59:30] SEGMENTATION: {"timestamp": 1769644770.759018, "type": "segmentation", "processing_time": 0.007277727127075195, "safe_percentage": 92.80000000000001, "count": 17}
+[18:59:30] SEGMENTATION: {"timestamp": 1769644770.9660773, "type": "segmentation", "processing_time": 0.00615382194519043, "safe_percentage": 92.80000000000001, "count": 18}
+[18:59:31] SEGMENTATION: {"timestamp": 1769644771.1568604, "type": "segmentation", "processing_time": 0.006908893585205078, "safe_percentage": 92.80000000000001, "count": 19}
+[18:59:31] SEGMENTATION: {"timestamp": 1769644771.3569748, "type": "segmentation", "processing_time": 0.007176637649536133, "safe_percentage": 92.80000000000001, "count": 20}
+[18:59:31] SEGMENTATION: {"timestamp": 1769644771.5515316, "type": "segmentation", "processing_time": 0.007959604263305664, "safe_percentage": 92.80000000000001, "count": 21}
+[18:59:31] SEGMENTATION: {"timestamp": 1769644771.7664943, "type": "segmentation", "processing_time": 0.006661891937255859, "safe_percentage": 92.80000000000001, "count": 22}
+[18:59:31] SEGMENTATION: {"timestamp": 1769644771.9645715, "type": "segmentation", "processing_time": 0.006062984466552734, "safe_percentage": 92.80000000000001, "count": 23}
+[18:59:32] SEGMENTATION: {"timestamp": 1769644772.1566372, "type": "segmentation", "processing_time": 0.005920886993408203, "safe_percentage": 92.80000000000001, "count": 24}
+[18:59:32] SEGMENTATION: {"timestamp": 1769644772.357868, "type": "segmentation", "processing_time": 0.006295204162597656, "safe_percentage": 92.80000000000001, "count": 25}
+[18:59:32] SEGMENTATION: {"timestamp": 1769644772.5612807, "type": "segmentation", "processing_time": 0.005780220031738281, "safe_percentage": 92.80000000000001, "count": 26}
+[18:59:32] SEGMENTATION: {"timestamp": 1769644772.7646577, "type": "segmentation", "processing_time": 0.005541324615478516, "safe_percentage": 92.80000000000001, "count": 27}
+[18:59:32] SEGMENTATION: {"timestamp": 1769644772.957543, "type": "segmentation", "processing_time": 0.008188486099243164, "safe_percentage": 92.80000000000001, "count": 28}
+[18:59:33] SEGMENTATION: {"timestamp": 1769644773.154678, "type": "segmentation", "processing_time": 0.0049555301666259766, "safe_percentage": 92.80000000000001, "count": 29}
+[18:59:33] SEGMENTATION: {"timestamp": 1769644773.3571172, "type": "segmentation", "processing_time": 0.0057985782623291016, "safe_percentage": 92.80000000000001, "count": 30}
+[18:59:33] SEGMENTATION: {"timestamp": 1769644773.5747101, "type": "segmentation", "processing_time": 0.007764339447021484, "safe_percentage": 92.80000000000001, "count": 31}
+[18:59:33] SEGMENTATION: {"timestamp": 1769644773.7561805, "type": "segmentation", "processing_time": 0.006119489669799805, "safe_percentage": 92.80000000000001, "count": 32}
+[18:59:33] SEGMENTATION: {"timestamp": 1769644773.9676318, "type": "segmentation", "processing_time": 0.0061914920806884766, "safe_percentage": 92.80000000000001, "count": 33}
+[18:59:34] SEGMENTATION: {"timestamp": 1769644774.1740813, "type": "segmentation", "processing_time": 0.009309768676757812, "safe_percentage": 92.80000000000001, "count": 34}
+[18:59:34] SEGMENTATION: {"timestamp": 1769644774.3651233, "type": "segmentation", "processing_time": 0.0076181888580322266, "safe_percentage": 92.80000000000001, "count": 35}
+[18:59:34] SEGMENTATION: {"timestamp": 1769644774.5660706, "type": "segmentation", "processing_time": 0.007451057434082031, "safe_percentage": 92.80000000000001, "count": 36}
+[18:59:34] SEGMENTATION: {"timestamp": 1769644774.7600026, "type": "segmentation", "processing_time": 0.007273435592651367, "safe_percentage": 92.80000000000001, "count": 37}
+[18:59:34] SEGMENTATION: {"timestamp": 1769644774.9692085, "type": "segmentation", "processing_time": 0.005897998809814453, "safe_percentage": 92.80000000000001, "count": 38}
+[18:59:35] SEGMENTATION: {"timestamp": 1769644775.1567569, "type": "segmentation", "processing_time": 0.005771160125732422, "safe_percentage": 92.80000000000001, "count": 39}
+[18:59:35] SEGMENTATION: {"timestamp": 1769644775.3608115, "type": "segmentation", "processing_time": 0.005333662033081055, "safe_percentage": 92.80000000000001, "count": 40}
+[18:59:35] SEGMENTATION: {"timestamp": 1769644775.5584266, "type": "segmentation", "processing_time": 0.005896806716918945, "safe_percentage": 92.80000000000001, "count": 41}
+[18:59:35] SEGMENTATION: {"timestamp": 1769644775.7772386, "type": "segmentation", "processing_time": 0.008208990097045898, "safe_percentage": 92.80000000000001, "count": 42}
+[18:59:35] SEGMENTATION: {"timestamp": 1769644775.9631104, "type": "segmentation", "processing_time": 0.008466482162475586, "safe_percentage": 92.80000000000001, "count": 43}
+[18:59:36] SEGMENTATION: {"timestamp": 1769644776.1717796, "type": "segmentation", "processing_time": 0.007985830307006836, "safe_percentage": 92.80000000000001, "count": 44}
+[18:59:36] SEGMENTATION: {"timestamp": 1769644776.3629394, "type": "segmentation", "processing_time": 0.008050203323364258, "safe_percentage": 92.80000000000001, "count": 45}
+[18:59:36] SEGMENTATION: {"timestamp": 1769644776.5758724, "type": "segmentation", "processing_time": 0.004363298416137695, "safe_percentage": 92.80000000000001, "count": 46}
+[18:59:36] SEGMENTATION: {"timestamp": 1769644776.7704735, "type": "segmentation", "processing_time": 0.007188081741333008, "safe_percentage": 92.80000000000001, "count": 47}
+[18:59:36] SEGMENTATION: {"timestamp": 1769644776.9710793, "type": "segmentation", "processing_time": 0.007544994354248047, "safe_percentage": 92.80000000000001, "count": 48}
+[18:59:37] SEGMENTATION: {"timestamp": 1769644777.170566, "type": "segmentation", "processing_time": 0.006069183349609375, "safe_percentage": 92.80000000000001, "count": 49}
+[18:59:37] SEGMENTATION: {"timestamp": 1769644777.3705559, "type": "segmentation", "processing_time": 0.008078813552856445, "safe_percentage": 92.80000000000001, "count": 50}
+[18:59:37] SEGMENTATION: {"timestamp": 1769644777.5670545, "type": "segmentation", "processing_time": 0.006299734115600586, "safe_percentage": 92.80000000000001, "count": 51}
+[18:59:37] SEGMENTATION: {"timestamp": 1769644777.7645128, "type": "segmentation", "processing_time": 0.005850553512573242, "safe_percentage": 92.80000000000001, "count": 52}
+[18:59:37] SEGMENTATION: {"timestamp": 1769644777.9771087, "type": "segmentation", "processing_time": 0.007082462310791016, "safe_percentage": 92.80000000000001, "count": 53}
+[18:59:38] SEGMENTATION: {"timestamp": 1769644778.1672683, "type": "segmentation", "processing_time": 0.006436347961425781, "safe_percentage": 92.80000000000001, "count": 54}
+[18:59:39] SEGMENTATION: {"timestamp": 1769644779.0013206, "type": "segmentation", "processing_time": 0.010510444641113281, "safe_percentage": 92.80000000000001, "count": 55}
+[18:59:39] SEGMENTATION: {"timestamp": 1769644779.2111616, "type": "segmentation", "processing_time": 0.008516550064086914, "safe_percentage": 92.80000000000001, "count": 56}
+[18:59:39] SEGMENTATION: {"timestamp": 1769644779.4010613, "type": "segmentation", "processing_time": 0.007204294204711914, "safe_percentage": 92.80000000000001, "count": 57}
+[18:59:39] SEGMENTATION: {"timestamp": 1769644779.6117156, "type": "segmentation", "processing_time": 0.00585174560546875, "safe_percentage": 92.80000000000001, "count": 58}
+[18:59:39] SEGMENTATION: {"timestamp": 1769644779.8003662, "type": "segmentation", "processing_time": 0.007864236831665039, "safe_percentage": 92.80000000000001, "count": 59}
+[18:59:39] SEGMENTATION: {"timestamp": 1769644779.9995165, "type": "segmentation", "processing_time": 0.0062444210052490234, "safe_percentage": 92.80000000000001, "count": 60}
+[18:59:40] SEGMENTATION: {"timestamp": 1769644780.1978486, "type": "segmentation", "processing_time": 0.005900859832763672, "safe_percentage": 92.80000000000001, "count": 61}
+[18:59:40] SEGMENTATION: {"timestamp": 1769644780.4112854, "type": "segmentation", "processing_time": 0.007769584655761719, "safe_percentage": 92.80000000000001, "count": 62}
+[18:59:40] SEGMENTATION: {"timestamp": 1769644780.6149411, "type": "segmentation", "processing_time": 0.009369850158691406, "safe_percentage": 92.80000000000001, "count": 63}
+[18:59:40] SEGMENTATION: {"timestamp": 1769644780.7986014, "type": "segmentation", "processing_time": 0.005738258361816406, "safe_percentage": 92.80000000000001, "count": 64}
+[18:59:41] SEGMENTATION: {"timestamp": 1769644781.0160553, "type": "segmentation", "processing_time": 0.007937908172607422, "safe_percentage": 92.80000000000001, "count": 65}
+[18:59:41] SEGMENTATION: {"timestamp": 1769644781.2072601, "type": "segmentation", "processing_time": 0.006226539611816406, "safe_percentage": 92.80000000000001, "count": 66}
+[18:59:41] SEGMENTATION: {"timestamp": 1769644781.4009216, "type": "segmentation", "processing_time": 0.006098747253417969, "safe_percentage": 92.80000000000001, "count": 67}
+[18:59:41] SEGMENTATION: {"timestamp": 1769644781.6034794, "type": "segmentation", "processing_time": 0.005991697311401367, "safe_percentage": 92.80000000000001, "count": 68}
+[18:59:41] SEGMENTATION: {"timestamp": 1769644781.8091528, "type": "segmentation", "processing_time": 0.005861759185791016, "safe_percentage": 92.80000000000001, "count": 69}
+[18:59:42] SEGMENTATION: {"timestamp": 1769644782.0195394, "type": "segmentation", "processing_time": 0.007405281066894531, "safe_percentage": 92.80000000000001, "count": 70}
+[18:59:42] SEGMENTATION: {"timestamp": 1769644782.2201767, "type": "segmentation", "processing_time": 0.007768392562866211, "safe_percentage": 92.80000000000001, "count": 71}
+[18:59:42] SEGMENTATION: {"timestamp": 1769644782.4115455, "type": "segmentation", "processing_time": 0.0076580047607421875, "safe_percentage": 92.80000000000001, "count": 72}
+[18:59:42] SEGMENTATION: {"timestamp": 1769644782.6113358, "type": "segmentation", "processing_time": 0.006583452224731445, "safe_percentage": 92.80000000000001, "count": 73}
+[18:59:42] SEGMENTATION: {"timestamp": 1769644782.8155046, "type": "segmentation", "processing_time": 0.0067555904388427734, "safe_percentage": 92.80000000000001, "count": 74}
+[18:59:42] NAVIGATION_END: SUCCESS - Path: 11.31m, Time: 15.3s
+
+======================================================================
+Session: 20260128_190150
+Started: 2026-01-28T19:01:50.558946
+======================================================================
+
+[19:01:53] PLANNING: {"timestamp": 1769644913.1782317, "type": "planning", "algorithm": "astar", "processing_time": 0.0019335746765136719, "path_length": 81, "success": true}
+[19:02:00] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[19:02:00] SEGMENTATION: {"timestamp": 1769644920.1785076, "type": "segmentation", "processing_time": 0.006522655487060547, "safe_percentage": 87.81, "count": 1}
+[19:02:00] SEGMENTATION: {"timestamp": 1769644920.3459475, "type": "segmentation", "processing_time": 0.004663705825805664, "safe_percentage": 87.81, "count": 2}
+[19:02:00] SEGMENTATION: {"timestamp": 1769644920.5509012, "type": "segmentation", "processing_time": 0.006350994110107422, "safe_percentage": 87.81, "count": 3}
+[19:02:00] SEGMENTATION: {"timestamp": 1769644920.7578776, "type": "segmentation", "processing_time": 0.007562160491943359, "safe_percentage": 87.81, "count": 4}
+[19:02:00] SEGMENTATION: {"timestamp": 1769644920.9583225, "type": "segmentation", "processing_time": 0.006437540054321289, "safe_percentage": 87.81, "count": 5}
+[19:02:01] SEGMENTATION: {"timestamp": 1769644921.1563153, "type": "segmentation", "processing_time": 0.007337093353271484, "safe_percentage": 87.81, "count": 6}
+[19:02:01] SEGMENTATION: {"timestamp": 1769644921.3555493, "type": "segmentation", "processing_time": 0.00635528564453125, "safe_percentage": 87.81, "count": 7}
+[19:02:01] SEGMENTATION: {"timestamp": 1769644921.5626297, "type": "segmentation", "processing_time": 0.00611114501953125, "safe_percentage": 87.81, "count": 8}
+[19:02:01] SEGMENTATION: {"timestamp": 1769644921.7533677, "type": "segmentation", "processing_time": 0.005801200866699219, "safe_percentage": 87.81, "count": 9}
+[19:02:01] SEGMENTATION: {"timestamp": 1769644921.9576283, "type": "segmentation", "processing_time": 0.006855010986328125, "safe_percentage": 87.81, "count": 10}
+[19:02:02] SEGMENTATION: {"timestamp": 1769644922.1643443, "type": "segmentation", "processing_time": 0.005356788635253906, "safe_percentage": 87.81, "count": 11}
+[19:02:02] SEGMENTATION: {"timestamp": 1769644922.3602118, "type": "segmentation", "processing_time": 0.005961894989013672, "safe_percentage": 87.81, "count": 12}
+[19:02:02] SEGMENTATION: {"timestamp": 1769644922.566084, "type": "segmentation", "processing_time": 0.00692439079284668, "safe_percentage": 87.81, "count": 13}
+[19:02:02] SEGMENTATION: {"timestamp": 1769644922.7608654, "type": "segmentation", "processing_time": 0.00515294075012207, "safe_percentage": 87.81, "count": 14}
+[19:02:02] SEGMENTATION: {"timestamp": 1769644922.9633331, "type": "segmentation", "processing_time": 0.008378028869628906, "safe_percentage": 87.81, "count": 15}
+[19:02:03] SEGMENTATION: {"timestamp": 1769644923.1616414, "type": "segmentation", "processing_time": 0.006095409393310547, "safe_percentage": 87.81, "count": 16}
+[19:02:03] SEGMENTATION: {"timestamp": 1769644923.3695717, "type": "segmentation", "processing_time": 0.006349802017211914, "safe_percentage": 87.81, "count": 17}
+[19:02:03] SEGMENTATION: {"timestamp": 1769644923.559208, "type": "segmentation", "processing_time": 0.009155035018920898, "safe_percentage": 87.81, "count": 18}
+[19:02:03] SEGMENTATION: {"timestamp": 1769644923.7663908, "type": "segmentation", "processing_time": 0.006509304046630859, "safe_percentage": 87.81, "count": 19}
+[19:02:03] SEGMENTATION: {"timestamp": 1769644923.959141, "type": "segmentation", "processing_time": 0.008494138717651367, "safe_percentage": 87.81, "count": 20}
+[19:02:04] SEGMENTATION: {"timestamp": 1769644924.1737857, "type": "segmentation", "processing_time": 0.009346246719360352, "safe_percentage": 87.81, "count": 21}
+[19:02:04] SEGMENTATION: {"timestamp": 1769644924.3623798, "type": "segmentation", "processing_time": 0.00689697265625, "safe_percentage": 87.81, "count": 22}
+[19:02:04] SEGMENTATION: {"timestamp": 1769644924.63404, "type": "segmentation", "processing_time": 0.05896782875061035, "safe_percentage": 87.81, "count": 23}
+[19:02:04] SEGMENTATION: {"timestamp": 1769644924.7942154, "type": "segmentation", "processing_time": 0.011439800262451172, "safe_percentage": 87.81, "count": 24}
+[19:02:04] SEGMENTATION: {"timestamp": 1769644924.9675934, "type": "segmentation", "processing_time": 0.0062847137451171875, "safe_percentage": 87.81, "count": 25}
+[19:02:05] SEGMENTATION: {"timestamp": 1769644925.1890318, "type": "segmentation", "processing_time": 0.0060083866119384766, "safe_percentage": 87.81, "count": 26}
+[19:02:05] SEGMENTATION: {"timestamp": 1769644925.382968, "type": "segmentation", "processing_time": 0.006238698959350586, "safe_percentage": 87.81, "count": 27}
+[19:02:05] SEGMENTATION: {"timestamp": 1769644925.5866396, "type": "segmentation", "processing_time": 0.008336544036865234, "safe_percentage": 87.81, "count": 28}
+[19:02:05] SEGMENTATION: {"timestamp": 1769644925.776672, "type": "segmentation", "processing_time": 0.008431434631347656, "safe_percentage": 87.81, "count": 29}
+[19:02:05] SEGMENTATION: {"timestamp": 1769644925.97644, "type": "segmentation", "processing_time": 0.010764837265014648, "safe_percentage": 87.81, "count": 30}
+[19:02:06] SEGMENTATION: {"timestamp": 1769644926.1788483, "type": "segmentation", "processing_time": 0.010025501251220703, "safe_percentage": 87.81, "count": 31}
+[19:02:06] SEGMENTATION: {"timestamp": 1769644926.3806045, "type": "segmentation", "processing_time": 0.009871959686279297, "safe_percentage": 87.81, "count": 32}
+[19:02:06] SEGMENTATION: {"timestamp": 1769644926.5922592, "type": "segmentation", "processing_time": 0.009375333786010742, "safe_percentage": 87.81, "count": 33}
+[19:02:06] SEGMENTATION: {"timestamp": 1769644926.789222, "type": "segmentation", "processing_time": 0.01671004295349121, "safe_percentage": 87.81, "count": 34}
+[19:02:06] SEGMENTATION: {"timestamp": 1769644926.9825377, "type": "segmentation", "processing_time": 0.010122060775756836, "safe_percentage": 87.81, "count": 35}
+[19:02:07] SEGMENTATION: {"timestamp": 1769644927.1812348, "type": "segmentation", "processing_time": 0.0064013004302978516, "safe_percentage": 87.81, "count": 36}
+[19:02:07] SEGMENTATION: {"timestamp": 1769644927.3814878, "type": "segmentation", "processing_time": 0.00851583480834961, "safe_percentage": 87.81, "count": 37}
+[19:02:07] SEGMENTATION: {"timestamp": 1769644927.584085, "type": "segmentation", "processing_time": 0.007384538650512695, "safe_percentage": 87.81, "count": 38}
+[19:02:07] SEGMENTATION: {"timestamp": 1769644927.7914743, "type": "segmentation", "processing_time": 0.007403373718261719, "safe_percentage": 87.81, "count": 39}
+[19:02:07] SEGMENTATION: {"timestamp": 1769644927.987814, "type": "segmentation", "processing_time": 0.011220455169677734, "safe_percentage": 87.81, "count": 40}
+[19:02:08] SEGMENTATION: {"timestamp": 1769644928.181138, "type": "segmentation", "processing_time": 0.009621620178222656, "safe_percentage": 87.81, "count": 41}
+[19:02:08] SEGMENTATION: {"timestamp": 1769644928.3872826, "type": "segmentation", "processing_time": 0.009598255157470703, "safe_percentage": 87.81, "count": 42}
+[19:02:08] SEGMENTATION: {"timestamp": 1769644928.5861712, "type": "segmentation", "processing_time": 0.008816719055175781, "safe_percentage": 87.81, "count": 43}
+[19:02:08] SEGMENTATION: {"timestamp": 1769644928.7855625, "type": "segmentation", "processing_time": 0.008557796478271484, "safe_percentage": 87.81, "count": 44}
+[19:02:08] SEGMENTATION: {"timestamp": 1769644928.988619, "type": "segmentation", "processing_time": 0.008572101593017578, "safe_percentage": 87.81, "count": 45}
+[19:02:09] SEGMENTATION: {"timestamp": 1769644929.196548, "type": "segmentation", "processing_time": 0.014183282852172852, "safe_percentage": 87.81, "count": 46}
+[19:02:09] SEGMENTATION: {"timestamp": 1769644929.390145, "type": "segmentation", "processing_time": 0.008060455322265625, "safe_percentage": 87.81, "count": 47}
+[19:02:09] SEGMENTATION: {"timestamp": 1769644929.595985, "type": "segmentation", "processing_time": 0.007497549057006836, "safe_percentage": 87.81, "count": 48}
+[19:02:09] SEGMENTATION: {"timestamp": 1769644929.8108296, "type": "segmentation", "processing_time": 0.007842540740966797, "safe_percentage": 87.81, "count": 49}
+[19:02:09] SEGMENTATION: {"timestamp": 1769644929.995169, "type": "segmentation", "processing_time": 0.010654211044311523, "safe_percentage": 87.81, "count": 50}
+[19:02:10] SEGMENTATION: {"timestamp": 1769644930.1961772, "type": "segmentation", "processing_time": 0.010200738906860352, "safe_percentage": 87.81, "count": 51}
+[19:02:10] SEGMENTATION: {"timestamp": 1769644930.3981164, "type": "segmentation", "processing_time": 0.006196022033691406, "safe_percentage": 87.81, "count": 52}
+[19:02:10] SEGMENTATION: {"timestamp": 1769644930.5913048, "type": "segmentation", "processing_time": 0.007376194000244141, "safe_percentage": 87.81, "count": 53}
+[19:02:10] SEGMENTATION: {"timestamp": 1769644930.793005, "type": "segmentation", "processing_time": 0.009097814559936523, "safe_percentage": 87.81, "count": 54}
+[19:02:11] SEGMENTATION: {"timestamp": 1769644931.0054202, "type": "segmentation", "processing_time": 0.007870674133300781, "safe_percentage": 87.81, "count": 55}
+[19:02:11] SEGMENTATION: {"timestamp": 1769644931.1867025, "type": "segmentation", "processing_time": 0.005915403366088867, "safe_percentage": 87.81, "count": 56}
+[19:02:11] SEGMENTATION: {"timestamp": 1769644931.406404, "type": "segmentation", "processing_time": 0.008999824523925781, "safe_percentage": 87.81, "count": 57}
+[19:02:11] SEGMENTATION: {"timestamp": 1769644931.5941484, "type": "segmentation", "processing_time": 0.0072841644287109375, "safe_percentage": 87.81, "count": 58}
+[19:02:11] SEGMENTATION: {"timestamp": 1769644931.8201072, "type": "segmentation", "processing_time": 0.022355318069458008, "safe_percentage": 87.81, "count": 59}
+[19:02:12] SEGMENTATION: {"timestamp": 1769644932.0154564, "type": "segmentation", "processing_time": 0.010013341903686523, "safe_percentage": 87.81, "count": 60}
+[19:02:12] SEGMENTATION: {"timestamp": 1769644932.2179954, "type": "segmentation", "processing_time": 0.007269620895385742, "safe_percentage": 87.81, "count": 61}
+[19:02:12] SEGMENTATION: {"timestamp": 1769644932.40633, "type": "segmentation", "processing_time": 0.008795499801635742, "safe_percentage": 87.81, "count": 62}
+[19:02:12] SEGMENTATION: {"timestamp": 1769644932.6143093, "type": "segmentation", "processing_time": 0.008147001266479492, "safe_percentage": 87.81, "count": 63}
+[19:02:12] SEGMENTATION: {"timestamp": 1769644932.8108585, "type": "segmentation", "processing_time": 0.008173704147338867, "safe_percentage": 87.81, "count": 64}
+[19:02:13] SEGMENTATION: {"timestamp": 1769644933.0086246, "type": "segmentation", "processing_time": 0.008733987808227539, "safe_percentage": 87.81, "count": 65}
+[19:02:13] SEGMENTATION: {"timestamp": 1769644933.2166767, "type": "segmentation", "processing_time": 0.008274555206298828, "safe_percentage": 87.81, "count": 66}
+[19:02:13] SEGMENTATION: {"timestamp": 1769644933.412884, "type": "segmentation", "processing_time": 0.007862329483032227, "safe_percentage": 87.81, "count": 67}
+[19:02:13] SEGMENTATION: {"timestamp": 1769644933.6200173, "type": "segmentation", "processing_time": 0.007135629653930664, "safe_percentage": 87.81, "count": 68}
+[19:02:13] SEGMENTATION: {"timestamp": 1769644933.8147306, "type": "segmentation", "processing_time": 0.01029348373413086, "safe_percentage": 87.81, "count": 69}
+[19:02:14] SEGMENTATION: {"timestamp": 1769644934.0130033, "type": "segmentation", "processing_time": 0.007351398468017578, "safe_percentage": 87.81, "count": 70}
+[19:02:14] SEGMENTATION: {"timestamp": 1769644934.2109916, "type": "segmentation", "processing_time": 0.011010408401489258, "safe_percentage": 87.81, "count": 71}
+[19:02:14] SEGMENTATION: {"timestamp": 1769644934.4149582, "type": "segmentation", "processing_time": 0.008262395858764648, "safe_percentage": 87.81, "count": 72}
+[19:02:14] SEGMENTATION: {"timestamp": 1769644934.6194952, "type": "segmentation", "processing_time": 0.007926225662231445, "safe_percentage": 87.81, "count": 73}
+[19:02:14] SEGMENTATION: {"timestamp": 1769644934.8263314, "type": "segmentation", "processing_time": 0.012827634811401367, "safe_percentage": 87.81, "count": 74}
+[19:02:15] SEGMENTATION: {"timestamp": 1769644935.0399425, "type": "segmentation", "processing_time": 0.02939915657043457, "safe_percentage": 87.81, "count": 75}
+[19:02:15] SEGMENTATION: {"timestamp": 1769644935.226533, "type": "segmentation", "processing_time": 0.008587121963500977, "safe_percentage": 87.81, "count": 76}
+[19:02:15] SEGMENTATION: {"timestamp": 1769644935.4135497, "type": "segmentation", "processing_time": 0.00856924057006836, "safe_percentage": 87.81, "count": 77}
+[19:02:15] SEGMENTATION: {"timestamp": 1769644935.7058308, "type": "segmentation", "processing_time": 0.011272430419921875, "safe_percentage": 87.81, "count": 78}
+[19:02:15] SEGMENTATION: {"timestamp": 1769644935.8576405, "type": "segmentation", "processing_time": 0.008527278900146484, "safe_percentage": 87.81, "count": 79}
+[19:02:16] SEGMENTATION: {"timestamp": 1769644936.067368, "type": "segmentation", "processing_time": 0.00850224494934082, "safe_percentage": 87.81, "count": 80}
+[19:02:16] NAVIGATION_END: SUCCESS - Path: 11.31m, Time: 16.0s
+
+======================================================================
+Session: 20260128_192246
+Started: 2026-01-28T19:22:46.970337
+======================================================================
+
+[19:22:49] PLANNING: {"timestamp": 1769646169.5635, "type": "planning", "algorithm": "astar", "processing_time": 0.0015444755554199219, "path_length": 81, "success": true}
+[19:22:50] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[19:22:50] SEGMENTATION: {"timestamp": 1769646170.281134, "type": "segmentation", "processing_time": 0.006479024887084961, "safe_percentage": 89.41, "count": 1}
+[19:22:50] SEGMENTATION: {"timestamp": 1769646170.4423208, "type": "segmentation", "processing_time": 0.005465984344482422, "safe_percentage": 89.41, "count": 2}
+[19:22:50] SEGMENTATION: {"timestamp": 1769646170.6454191, "type": "segmentation", "processing_time": 0.005278825759887695, "safe_percentage": 89.41, "count": 3}
+[19:22:50] SEGMENTATION: {"timestamp": 1769646170.8434956, "type": "segmentation", "processing_time": 0.00503230094909668, "safe_percentage": 89.41, "count": 4}
+[19:22:51] SEGMENTATION: {"timestamp": 1769646171.0495522, "type": "segmentation", "processing_time": 0.005678415298461914, "safe_percentage": 89.41, "count": 5}
+[19:22:51] SEGMENTATION: {"timestamp": 1769646171.253678, "type": "segmentation", "processing_time": 0.006423234939575195, "safe_percentage": 89.41, "count": 6}
+[19:22:51] SEGMENTATION: {"timestamp": 1769646171.4501379, "type": "segmentation", "processing_time": 0.00769352912902832, "safe_percentage": 89.41, "count": 7}
+[19:22:51] SEGMENTATION: {"timestamp": 1769646171.648906, "type": "segmentation", "processing_time": 0.00881814956665039, "safe_percentage": 89.41, "count": 8}
+[19:22:51] SEGMENTATION: {"timestamp": 1769646171.849429, "type": "segmentation", "processing_time": 0.007357597351074219, "safe_percentage": 89.41, "count": 9}
+[19:22:52] SEGMENTATION: {"timestamp": 1769646172.0547497, "type": "segmentation", "processing_time": 0.006276369094848633, "safe_percentage": 89.41, "count": 10}
+[19:22:52] SEGMENTATION: {"timestamp": 1769646172.250017, "type": "segmentation", "processing_time": 0.008036613464355469, "safe_percentage": 89.41, "count": 11}
+[19:22:52] SEGMENTATION: {"timestamp": 1769646172.4502134, "type": "segmentation", "processing_time": 0.007183551788330078, "safe_percentage": 89.41, "count": 12}
+[19:22:52] SEGMENTATION: {"timestamp": 1769646172.6496558, "type": "segmentation", "processing_time": 0.0068056583404541016, "safe_percentage": 89.41, "count": 13}
+[19:22:52] SEGMENTATION: {"timestamp": 1769646172.8492775, "type": "segmentation", "processing_time": 0.0069484710693359375, "safe_percentage": 89.41, "count": 14}
+[19:22:53] SEGMENTATION: {"timestamp": 1769646173.0581686, "type": "segmentation", "processing_time": 0.007447719573974609, "safe_percentage": 89.41, "count": 15}
+[19:22:53] SEGMENTATION: {"timestamp": 1769646173.267251, "type": "segmentation", "processing_time": 0.007666349411010742, "safe_percentage": 89.41, "count": 16}
+[19:22:53] SEGMENTATION: {"timestamp": 1769646173.4555902, "type": "segmentation", "processing_time": 0.0072596073150634766, "safe_percentage": 89.41, "count": 17}
+[19:22:53] SEGMENTATION: {"timestamp": 1769646173.6661189, "type": "segmentation", "processing_time": 0.005524635314941406, "safe_percentage": 89.41, "count": 18}
+[19:22:53] SEGMENTATION: {"timestamp": 1769646173.861239, "type": "segmentation", "processing_time": 0.008183479309082031, "safe_percentage": 89.41, "count": 19}
+[19:22:54] SEGMENTATION: {"timestamp": 1769646174.0672586, "type": "segmentation", "processing_time": 0.006788969039916992, "safe_percentage": 89.41, "count": 20}
+[19:22:54] SEGMENTATION: {"timestamp": 1769646174.254979, "type": "segmentation", "processing_time": 0.006585359573364258, "safe_percentage": 89.41, "count": 21}
+[19:22:54] SEGMENTATION: {"timestamp": 1769646174.4659216, "type": "segmentation", "processing_time": 0.009548664093017578, "safe_percentage": 89.41, "count": 22}
+[19:22:54] SEGMENTATION: {"timestamp": 1769646174.6657145, "type": "segmentation", "processing_time": 0.006739377975463867, "safe_percentage": 89.41, "count": 23}
+[19:22:54] SEGMENTATION: {"timestamp": 1769646174.8627725, "type": "segmentation", "processing_time": 0.0077495574951171875, "safe_percentage": 89.41, "count": 24}
+[19:22:55] SEGMENTATION: {"timestamp": 1769646175.0701988, "type": "segmentation", "processing_time": 0.007976770401000977, "safe_percentage": 89.41, "count": 25}
+[19:22:55] SEGMENTATION: {"timestamp": 1769646175.2621806, "type": "segmentation", "processing_time": 0.008748769760131836, "safe_percentage": 89.41, "count": 26}
+[19:22:55] SEGMENTATION: {"timestamp": 1769646175.4541652, "type": "segmentation", "processing_time": 0.005561113357543945, "safe_percentage": 89.41, "count": 27}
+[19:22:55] SEGMENTATION: {"timestamp": 1769646175.6612523, "type": "segmentation", "processing_time": 0.0070650577545166016, "safe_percentage": 89.41, "count": 28}
+[19:22:55] SEGMENTATION: {"timestamp": 1769646175.859852, "type": "segmentation", "processing_time": 0.008098840713500977, "safe_percentage": 89.41, "count": 29}
+[19:22:56] NAVIGATION_END: FAILED - Path: 11.31m, Time: 5.8s
+
+======================================================================
+Session: 20260128_192559
+Started: 2026-01-28T19:25:59.461257
+======================================================================
+
+[19:26:02] PLANNING: {"timestamp": 1769646362.0985634, "type": "planning", "algorithm": "astar", "processing_time": 0.002602815628051758, "path_length": 81, "success": true}
+[19:26:03] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[19:26:03] SEGMENTATION: {"timestamp": 1769646363.2651968, "type": "segmentation", "processing_time": 0.009722471237182617, "safe_percentage": 89.45, "count": 1}
+[19:26:03] SEGMENTATION: {"timestamp": 1769646363.4142232, "type": "segmentation", "processing_time": 0.014154434204101562, "safe_percentage": 89.45, "count": 2}
+[19:26:03] SEGMENTATION: {"timestamp": 1769646363.6053524, "type": "segmentation", "processing_time": 0.0072100162506103516, "safe_percentage": 89.45, "count": 3}
+[19:26:03] SEGMENTATION: {"timestamp": 1769646363.8100054, "type": "segmentation", "processing_time": 0.008409976959228516, "safe_percentage": 89.45, "count": 4}
+[19:26:04] SEGMENTATION: {"timestamp": 1769646364.0077426, "type": "segmentation", "processing_time": 0.006937742233276367, "safe_percentage": 89.45, "count": 5}
+[19:26:04] SEGMENTATION: {"timestamp": 1769646364.2182696, "type": "segmentation", "processing_time": 0.006136178970336914, "safe_percentage": 89.45, "count": 6}
+[19:26:04] SEGMENTATION: {"timestamp": 1769646364.4179873, "type": "segmentation", "processing_time": 0.007466316223144531, "safe_percentage": 89.45, "count": 7}
+[19:26:04] SEGMENTATION: {"timestamp": 1769646364.618135, "type": "segmentation", "processing_time": 0.005026340484619141, "safe_percentage": 89.45, "count": 8}
+[19:26:04] SEGMENTATION: {"timestamp": 1769646364.802493, "type": "segmentation", "processing_time": 0.006670951843261719, "safe_percentage": 89.45, "count": 9}
+[19:26:05] SEGMENTATION: {"timestamp": 1769646365.0103598, "type": "segmentation", "processing_time": 0.007147073745727539, "safe_percentage": 89.45, "count": 10}
+[19:26:05] SEGMENTATION: {"timestamp": 1769646365.2094715, "type": "segmentation", "processing_time": 0.009375333786010742, "safe_percentage": 89.45, "count": 11}
+[19:26:05] SEGMENTATION: {"timestamp": 1769646365.4099689, "type": "segmentation", "processing_time": 0.008984088897705078, "safe_percentage": 89.45, "count": 12}
+[19:26:05] SEGMENTATION: {"timestamp": 1769646365.6168268, "type": "segmentation", "processing_time": 0.006103515625, "safe_percentage": 89.45, "count": 13}
+[19:26:05] SEGMENTATION: {"timestamp": 1769646365.8216696, "type": "segmentation", "processing_time": 0.008450031280517578, "safe_percentage": 89.45, "count": 14}
+[19:26:06] SEGMENTATION: {"timestamp": 1769646366.0201204, "type": "segmentation", "processing_time": 0.00807332992553711, "safe_percentage": 89.45, "count": 15}
+[19:26:06] SEGMENTATION: {"timestamp": 1769646366.216424, "type": "segmentation", "processing_time": 0.007646322250366211, "safe_percentage": 89.45, "count": 16}
+[19:26:06] SEGMENTATION: {"timestamp": 1769646366.519039, "type": "segmentation", "processing_time": 0.007306098937988281, "safe_percentage": 89.45, "count": 17}
+[19:26:06] SEGMENTATION: {"timestamp": 1769646366.6308668, "type": "segmentation", "processing_time": 0.005956172943115234, "safe_percentage": 89.45, "count": 18}
+[19:26:06] SEGMENTATION: {"timestamp": 1769646366.821834, "type": "segmentation", "processing_time": 0.008326530456542969, "safe_percentage": 89.45, "count": 19}
+[19:26:07] SEGMENTATION: {"timestamp": 1769646367.0105188, "type": "segmentation", "processing_time": 0.00636601448059082, "safe_percentage": 89.45, "count": 20}
+[19:26:07] SEGMENTATION: {"timestamp": 1769646367.2734785, "type": "segmentation", "processing_time": 0.0064525604248046875, "safe_percentage": 89.45, "count": 21}
+[19:26:07] SEGMENTATION: {"timestamp": 1769646367.4264581, "type": "segmentation", "processing_time": 0.005820274353027344, "safe_percentage": 89.45, "count": 22}
+[19:26:07] SEGMENTATION: {"timestamp": 1769646367.6139994, "type": "segmentation", "processing_time": 0.007422685623168945, "safe_percentage": 89.45, "count": 23}
+[19:26:07] SEGMENTATION: {"timestamp": 1769646367.8689547, "type": "segmentation", "processing_time": 0.008730411529541016, "safe_percentage": 89.45, "count": 24}
+[19:26:08] SEGMENTATION: {"timestamp": 1769646368.0331373, "type": "segmentation", "processing_time": 0.006723642349243164, "safe_percentage": 89.45, "count": 25}
+[19:26:08] SEGMENTATION: {"timestamp": 1769646368.2656093, "type": "segmentation", "processing_time": 0.009116649627685547, "safe_percentage": 89.45, "count": 26}
+[19:26:08] SEGMENTATION: {"timestamp": 1769646368.424149, "type": "segmentation", "processing_time": 0.007860660552978516, "safe_percentage": 89.45, "count": 27}
+[19:26:08] SEGMENTATION: {"timestamp": 1769646368.6181352, "type": "segmentation", "processing_time": 0.006552457809448242, "safe_percentage": 89.45, "count": 28}
+[19:26:08] SEGMENTATION: {"timestamp": 1769646368.8283215, "type": "segmentation", "processing_time": 0.006464481353759766, "safe_percentage": 89.45, "count": 29}
+[19:26:09] SEGMENTATION: {"timestamp": 1769646369.025464, "type": "segmentation", "processing_time": 0.0052645206451416016, "safe_percentage": 89.45, "count": 30}
+[19:26:09] SEGMENTATION: {"timestamp": 1769646369.222543, "type": "segmentation", "processing_time": 0.006058216094970703, "safe_percentage": 89.45, "count": 31}
+[19:26:09] SEGMENTATION: {"timestamp": 1769646369.4265184, "type": "segmentation", "processing_time": 0.0073468685150146484, "safe_percentage": 89.45, "count": 32}
+[19:26:09] NAVIGATION_END: FAILED - Path: 11.31m, Time: 6.4s
+
+======================================================================
+Session: 20260128_192715
+Started: 2026-01-28T19:27:15.210273
+======================================================================
+
+[19:27:17] PLANNING: {"timestamp": 1769646437.866777, "type": "planning", "algorithm": "astar", "processing_time": 0.0024585723876953125, "path_length": 81, "success": true}
+[19:27:19] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[19:27:19] SEGMENTATION: {"timestamp": 1769646439.125354, "type": "segmentation", "processing_time": 0.009229183197021484, "safe_percentage": 89.41, "count": 1}
+[19:27:19] SEGMENTATION: {"timestamp": 1769646439.306022, "type": "segmentation", "processing_time": 0.007676362991333008, "safe_percentage": 89.41, "count": 2}
+[19:27:19] SEGMENTATION: {"timestamp": 1769646439.501266, "type": "segmentation", "processing_time": 0.008698701858520508, "safe_percentage": 89.41, "count": 3}
+[19:27:19] SEGMENTATION: {"timestamp": 1769646439.6968794, "type": "segmentation", "processing_time": 0.00777888298034668, "safe_percentage": 89.41, "count": 4}
+[19:27:19] SEGMENTATION: {"timestamp": 1769646439.8999763, "type": "segmentation", "processing_time": 0.005688667297363281, "safe_percentage": 89.41, "count": 5}
+[19:27:20] SEGMENTATION: {"timestamp": 1769646440.103503, "type": "segmentation", "processing_time": 0.005082845687866211, "safe_percentage": 89.41, "count": 6}
+[19:27:20] SEGMENTATION: {"timestamp": 1769646440.3066764, "type": "segmentation", "processing_time": 0.004305601119995117, "safe_percentage": 89.41, "count": 7}
+[19:27:20] SEGMENTATION: {"timestamp": 1769646440.4930153, "type": "segmentation", "processing_time": 0.005444049835205078, "safe_percentage": 89.41, "count": 8}
+[19:27:20] SEGMENTATION: {"timestamp": 1769646440.68838, "type": "segmentation", "processing_time": 0.005202293395996094, "safe_percentage": 89.41, "count": 9}
+[19:27:20] SEGMENTATION: {"timestamp": 1769646440.8987772, "type": "segmentation", "processing_time": 0.0056569576263427734, "safe_percentage": 89.41, "count": 10}
+[19:27:21] SEGMENTATION: {"timestamp": 1769646441.1016014, "type": "segmentation", "processing_time": 0.0050585269927978516, "safe_percentage": 89.41, "count": 11}
+[19:27:21] SEGMENTATION: {"timestamp": 1769646441.2977726, "type": "segmentation", "processing_time": 0.004052400588989258, "safe_percentage": 89.41, "count": 12}
+[19:27:21] SEGMENTATION: {"timestamp": 1769646441.5006442, "type": "segmentation", "processing_time": 0.004428863525390625, "safe_percentage": 89.41, "count": 13}
+[19:27:21] SEGMENTATION: {"timestamp": 1769646441.6902318, "type": "segmentation", "processing_time": 0.00559234619140625, "safe_percentage": 89.41, "count": 14}
+[19:27:21] SEGMENTATION: {"timestamp": 1769646441.8936615, "type": "segmentation", "processing_time": 0.007071018218994141, "safe_percentage": 89.41, "count": 15}
+[19:27:22] SEGMENTATION: {"timestamp": 1769646442.100436, "type": "segmentation", "processing_time": 0.007643222808837891, "safe_percentage": 89.41, "count": 16}
+[19:27:22] SEGMENTATION: {"timestamp": 1769646442.3101933, "type": "segmentation", "processing_time": 0.0067217350006103516, "safe_percentage": 89.41, "count": 17}
+[19:27:22] SEGMENTATION: {"timestamp": 1769646442.5088043, "type": "segmentation", "processing_time": 0.007310390472412109, "safe_percentage": 89.41, "count": 18}
+[19:27:22] SEGMENTATION: {"timestamp": 1769646442.6994767, "type": "segmentation", "processing_time": 0.008148908615112305, "safe_percentage": 89.41, "count": 19}
+[19:27:22] SEGMENTATION: {"timestamp": 1769646442.897602, "type": "segmentation", "processing_time": 0.007269859313964844, "safe_percentage": 89.41, "count": 20}
+[19:27:23] SEGMENTATION: {"timestamp": 1769646443.104769, "type": "segmentation", "processing_time": 0.007650613784790039, "safe_percentage": 89.41, "count": 21}
+[19:27:23] SEGMENTATION: {"timestamp": 1769646443.301662, "type": "segmentation", "processing_time": 0.006142616271972656, "safe_percentage": 89.41, "count": 22}
+[19:27:23] SEGMENTATION: {"timestamp": 1769646443.5077255, "type": "segmentation", "processing_time": 0.005589962005615234, "safe_percentage": 89.41, "count": 23}
+[19:27:23] SEGMENTATION: {"timestamp": 1769646443.7073953, "type": "segmentation", "processing_time": 0.008405447006225586, "safe_percentage": 89.41, "count": 24}
+[19:27:23] SEGMENTATION: {"timestamp": 1769646443.9244926, "type": "segmentation", "processing_time": 0.00827932357788086, "safe_percentage": 89.41, "count": 25}
+[19:27:24] SEGMENTATION: {"timestamp": 1769646444.1078372, "type": "segmentation", "processing_time": 0.00833272933959961, "safe_percentage": 89.41, "count": 26}
+[19:27:24] SEGMENTATION: {"timestamp": 1769646444.3016102, "type": "segmentation", "processing_time": 0.007046222686767578, "safe_percentage": 89.41, "count": 27}
+[19:27:24] NAVIGATION_END: FAILED - Path: 11.31m, Time: 5.4s
+
+======================================================================
+Session: 20260128_193141
+Started: 2026-01-28T19:31:41.117102
+======================================================================
+
+[19:31:43] PLANNING: {"timestamp": 1769646703.7846932, "type": "planning", "algorithm": "astar", "processing_time": 0.0033445358276367188, "path_length": 81, "success": true}
+[19:31:46] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[19:31:46] SEGMENTATION: {"timestamp": 1769646706.1036518, "type": "segmentation", "processing_time": 0.012377262115478516, "safe_percentage": 89.41, "count": 1}
+[19:31:46] SEGMENTATION: {"timestamp": 1769646706.2564366, "type": "segmentation", "processing_time": 0.008319377899169922, "safe_percentage": 89.41, "count": 2}
+[19:31:46] SEGMENTATION: {"timestamp": 1769646706.4531932, "type": "segmentation", "processing_time": 0.008057832717895508, "safe_percentage": 89.41, "count": 3}
+[19:31:46] SEGMENTATION: {"timestamp": 1769646706.6440144, "type": "segmentation", "processing_time": 0.00688481330871582, "safe_percentage": 89.41, "count": 4}
+[19:31:46] SEGMENTATION: {"timestamp": 1769646706.8593795, "type": "segmentation", "processing_time": 0.0076999664306640625, "safe_percentage": 89.41, "count": 5}
+[19:31:47] SEGMENTATION: {"timestamp": 1769646707.0579996, "type": "segmentation", "processing_time": 0.007104396820068359, "safe_percentage": 89.41, "count": 6}
+[19:31:47] SEGMENTATION: {"timestamp": 1769646707.2532132, "type": "segmentation", "processing_time": 0.008991003036499023, "safe_percentage": 89.41, "count": 7}
+[19:31:47] SEGMENTATION: {"timestamp": 1769646707.444995, "type": "segmentation", "processing_time": 0.0053462982177734375, "safe_percentage": 89.41, "count": 8}
+[19:31:47] SEGMENTATION: {"timestamp": 1769646707.664433, "type": "segmentation", "processing_time": 0.005852937698364258, "safe_percentage": 89.41, "count": 9}
+[19:31:47] SEGMENTATION: {"timestamp": 1769646707.844175, "type": "segmentation", "processing_time": 0.005788326263427734, "safe_percentage": 89.41, "count": 10}
+[19:31:48] SEGMENTATION: {"timestamp": 1769646708.0469842, "type": "segmentation", "processing_time": 0.00561976432800293, "safe_percentage": 89.41, "count": 11}
+[19:31:48] SEGMENTATION: {"timestamp": 1769646708.2587566, "type": "segmentation", "processing_time": 0.006320476531982422, "safe_percentage": 89.41, "count": 12}
+[19:31:48] SEGMENTATION: {"timestamp": 1769646708.4524758, "type": "segmentation", "processing_time": 0.008148431777954102, "safe_percentage": 89.41, "count": 13}
+[19:31:48] SEGMENTATION: {"timestamp": 1769646708.646592, "type": "segmentation", "processing_time": 0.007814407348632812, "safe_percentage": 89.41, "count": 14}
+[19:31:48] SEGMENTATION: {"timestamp": 1769646708.857093, "type": "segmentation", "processing_time": 0.006451129913330078, "safe_percentage": 89.41, "count": 15}
+[19:31:49] SEGMENTATION: {"timestamp": 1769646709.0602136, "type": "segmentation", "processing_time": 0.005801677703857422, "safe_percentage": 89.41, "count": 16}
+[19:31:49] SEGMENTATION: {"timestamp": 1769646709.2557032, "type": "segmentation", "processing_time": 0.005572795867919922, "safe_percentage": 89.41, "count": 17}
+[19:31:49] SEGMENTATION: {"timestamp": 1769646709.447854, "type": "segmentation", "processing_time": 0.005774021148681641, "safe_percentage": 89.41, "count": 18}
+[19:31:49] SEGMENTATION: {"timestamp": 1769646709.660481, "type": "segmentation", "processing_time": 0.005565166473388672, "safe_percentage": 89.41, "count": 19}
+[19:31:49] SEGMENTATION: {"timestamp": 1769646709.8480656, "type": "segmentation", "processing_time": 0.005550861358642578, "safe_percentage": 89.41, "count": 20}
+[19:31:50] SEGMENTATION: {"timestamp": 1769646710.0527875, "type": "segmentation", "processing_time": 0.005411624908447266, "safe_percentage": 89.41, "count": 21}
+[19:31:50] SEGMENTATION: {"timestamp": 1769646710.2578344, "type": "segmentation", "processing_time": 0.005347490310668945, "safe_percentage": 89.41, "count": 22}
+[19:31:50] SEGMENTATION: {"timestamp": 1769646710.4641573, "type": "segmentation", "processing_time": 0.006307125091552734, "safe_percentage": 89.41, "count": 23}
+[19:31:50] SEGMENTATION: {"timestamp": 1769646710.652327, "type": "segmentation", "processing_time": 0.006131410598754883, "safe_percentage": 89.41, "count": 24}
+[19:31:50] SEGMENTATION: {"timestamp": 1769646710.8571317, "type": "segmentation", "processing_time": 0.004728555679321289, "safe_percentage": 89.41, "count": 25}
+[19:31:51] SEGMENTATION: {"timestamp": 1769646711.0537944, "type": "segmentation", "processing_time": 0.005335569381713867, "safe_percentage": 89.41, "count": 26}
+[19:31:51] SEGMENTATION: {"timestamp": 1769646711.2661102, "type": "segmentation", "processing_time": 0.0060999393463134766, "safe_percentage": 89.41, "count": 27}
+[19:31:51] SEGMENTATION: {"timestamp": 1769646711.4558437, "type": "segmentation", "processing_time": 0.00512242317199707, "safe_percentage": 89.41, "count": 28}
+[19:31:51] SEGMENTATION: {"timestamp": 1769646711.6535952, "type": "segmentation", "processing_time": 0.004010677337646484, "safe_percentage": 89.41, "count": 29}
+[19:31:51] SEGMENTATION: {"timestamp": 1769646711.8603237, "type": "segmentation", "processing_time": 0.009436845779418945, "safe_percentage": 89.41, "count": 30}
+[19:31:52] SEGMENTATION: {"timestamp": 1769646712.063211, "type": "segmentation", "processing_time": 0.007017612457275391, "safe_percentage": 89.41, "count": 31}
+[19:31:52] SEGMENTATION: {"timestamp": 1769646712.2640414, "type": "segmentation", "processing_time": 0.009983062744140625, "safe_percentage": 89.41, "count": 32}
+[19:31:52] SEGMENTATION: {"timestamp": 1769646712.4612384, "type": "segmentation", "processing_time": 0.006834983825683594, "safe_percentage": 89.41, "count": 33}
+[19:31:52] SEGMENTATION: {"timestamp": 1769646712.6602933, "type": "segmentation", "processing_time": 0.008428096771240234, "safe_percentage": 89.41, "count": 34}
+[19:31:52] SEGMENTATION: {"timestamp": 1769646712.869653, "type": "segmentation", "processing_time": 0.007940292358398438, "safe_percentage": 89.41, "count": 35}
+[19:31:53] SEGMENTATION: {"timestamp": 1769646713.059687, "type": "segmentation", "processing_time": 0.006584882736206055, "safe_percentage": 89.41, "count": 36}
+[19:31:53] SEGMENTATION: {"timestamp": 1769646713.2809575, "type": "segmentation", "processing_time": 0.007134914398193359, "safe_percentage": 89.41, "count": 37}
+[19:31:53] SEGMENTATION: {"timestamp": 1769646713.4662368, "type": "segmentation", "processing_time": 0.005388021469116211, "safe_percentage": 89.41, "count": 38}
+[19:31:53] SEGMENTATION: {"timestamp": 1769646713.6640742, "type": "segmentation", "processing_time": 0.006769895553588867, "safe_percentage": 89.41, "count": 39}
+[19:31:53] SEGMENTATION: {"timestamp": 1769646713.8602958, "type": "segmentation", "processing_time": 0.0073473453521728516, "safe_percentage": 89.41, "count": 40}
+[19:31:54] SEGMENTATION: {"timestamp": 1769646714.0616736, "type": "segmentation", "processing_time": 0.0064046382904052734, "safe_percentage": 89.41, "count": 41}
+[19:31:54] SEGMENTATION: {"timestamp": 1769646714.2611601, "type": "segmentation", "processing_time": 0.007599592208862305, "safe_percentage": 89.41, "count": 42}
+[19:31:54] SEGMENTATION: {"timestamp": 1769646714.4649417, "type": "segmentation", "processing_time": 0.0067250728607177734, "safe_percentage": 89.41, "count": 43}
+[19:31:54] SEGMENTATION: {"timestamp": 1769646714.6612456, "type": "segmentation", "processing_time": 0.006358623504638672, "safe_percentage": 89.41, "count": 44}
+[19:31:54] SEGMENTATION: {"timestamp": 1769646714.861333, "type": "segmentation", "processing_time": 0.0067865848541259766, "safe_percentage": 89.41, "count": 45}
+[19:31:55] SEGMENTATION: {"timestamp": 1769646715.0616426, "type": "segmentation", "processing_time": 0.006152153015136719, "safe_percentage": 89.41, "count": 46}
+[19:31:55] SEGMENTATION: {"timestamp": 1769646715.2674327, "type": "segmentation", "processing_time": 0.008145809173583984, "safe_percentage": 89.41, "count": 47}
+[19:31:55] SEGMENTATION: {"timestamp": 1769646715.4672582, "type": "segmentation", "processing_time": 0.006410360336303711, "safe_percentage": 89.41, "count": 48}
+[19:31:55] SEGMENTATION: {"timestamp": 1769646715.6614246, "type": "segmentation", "processing_time": 0.006151676177978516, "safe_percentage": 89.41, "count": 49}
+[19:31:55] SEGMENTATION: {"timestamp": 1769646715.8578985, "type": "segmentation", "processing_time": 0.005566120147705078, "safe_percentage": 89.41, "count": 50}
+[19:31:56] SEGMENTATION: {"timestamp": 1769646716.079066, "type": "segmentation", "processing_time": 0.00689387321472168, "safe_percentage": 89.41, "count": 51}
+[19:31:56] NAVIGATION_END: FAILED - Path: 11.31m, Time: 10.2s
+
+======================================================================
+Session: 20260129_115604
+Started: 2026-01-29T11:56:04.289430
+======================================================================
+
+[11:56:06] PLANNING: {"timestamp": 1769705766.9247081, "type": "planning", "algorithm": "astar", "processing_time": 0.002111673355102539, "path_length": 81, "success": true}
+[11:56:08] NAVIGATION_START: Start navigation from (10, 10) to (90, 90) using astar
+[11:56:08] SEGMENTATION: {"timestamp": 1769705768.1093454, "type": "segmentation", "processing_time": 0.009543180465698242, "safe_percentage": 89.41, "count": 1}
+[11:56:08] SEGMENTATION: {"timestamp": 1769705768.2784717, "type": "segmentation", "processing_time": 0.009184837341308594, "safe_percentage": 89.41, "count": 2}
+[11:56:08] SEGMENTATION: {"timestamp": 1769705768.4649217, "type": "segmentation", "processing_time": 0.006932973861694336, "safe_percentage": 89.41, "count": 3}
+[11:56:08] SEGMENTATION: {"timestamp": 1769705768.6730385, "type": "segmentation", "processing_time": 0.0059740543365478516, "safe_percentage": 89.41, "count": 4}
+[11:56:08] SEGMENTATION: {"timestamp": 1769705768.87968, "type": "segmentation", "processing_time": 0.007250785827636719, "safe_percentage": 89.41, "count": 5}
+[11:56:09] SEGMENTATION: {"timestamp": 1769705769.0758405, "type": "segmentation", "processing_time": 0.005955934524536133, "safe_percentage": 89.41, "count": 6}
+[11:56:09] SEGMENTATION: {"timestamp": 1769705769.2800732, "type": "segmentation", "processing_time": 0.006325483322143555, "safe_percentage": 89.41, "count": 7}
+[11:56:09] SEGMENTATION: {"timestamp": 1769705769.4790154, "type": "segmentation", "processing_time": 0.005538225173950195, "safe_percentage": 89.41, "count": 8}
+[11:56:09] SEGMENTATION: {"timestamp": 1769705769.6694613, "type": "segmentation", "processing_time": 0.0077838897705078125, "safe_percentage": 89.41, "count": 9}
+[11:56:09] SEGMENTATION: {"timestamp": 1769705769.8779242, "type": "segmentation", "processing_time": 0.0060465335845947266, "safe_percentage": 89.41, "count": 10}
+[11:56:10] SEGMENTATION: {"timestamp": 1769705770.073549, "type": "segmentation", "processing_time": 0.009152889251708984, "safe_percentage": 89.41, "count": 11}
+[11:56:10] SEGMENTATION: {"timestamp": 1769705770.2763138, "type": "segmentation", "processing_time": 0.006693363189697266, "safe_percentage": 89.41, "count": 12}
+[11:56:10] SEGMENTATION: {"timestamp": 1769705770.4715483, "type": "segmentation", "processing_time": 0.007490873336791992, "safe_percentage": 89.41, "count": 13}
+[11:56:10] SEGMENTATION: {"timestamp": 1769705770.6778078, "type": "segmentation", "processing_time": 0.00794363021850586, "safe_percentage": 89.41, "count": 14}
+[11:56:10] SEGMENTATION: {"timestamp": 1769705770.878576, "type": "segmentation", "processing_time": 0.006127357482910156, "safe_percentage": 89.41, "count": 15}
+[11:56:11] SEGMENTATION: {"timestamp": 1769705771.0928328, "type": "segmentation", "processing_time": 0.005781888961791992, "safe_percentage": 89.41, "count": 16}
+[11:56:11] NAVIGATION_END: FAILED - Path: 11.31m, Time: 3.2s

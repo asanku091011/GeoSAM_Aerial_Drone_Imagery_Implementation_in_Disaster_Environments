@@ -1,0 +1,27 @@
+# Disaster Navigation System - Python Dependencies
+# Install with: pip3 install -r requirements.txt
+
+# Core numerical and scientific computing
+numpy>=1.21.0,<2.0.0
+scipy>=1.7.0,<2.0.0
+
+# Computer vision and image processing
+opencv-python>=4.5.0,<5.0.0
+Pillow>=8.0.0,<11.0.0
+
+# Deep learning framework (for Geo-SAM)
+torch>=1.10.0,<3.0.0
+torchvision>=0.11.0,<1.0.0
+
+# Drone control
+djitellopy>=2.4.0,<3.0.0
+
+# Data visualization (optional but recommended)
+matplotlib>=3.3.0,<4.0.0
+
+# For CSV and data handling
+pandas>=1.3.0,<3.0.0
+
+# Additional utilities
+# Note: Geo-SAM model weights must be downloaded separately
+# Follow instructions in README.md
