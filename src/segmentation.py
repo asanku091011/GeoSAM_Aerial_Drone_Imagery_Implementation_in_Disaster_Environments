@@ -1,6 +1,8 @@
 """
-Segmentation module using Geo-SAM to classify safe and unsafe regions.
+Segmentation module using SAM (Segment Anything Model) to classify safe and unsafe regions.
 Processes drone images and outputs binary masks for navigation.
+
+UPDATED: Now uses real SAM model instead of mock
 """
 
 import cv2
@@ -12,16 +14,19 @@ import config
 
 class GeoSAMSegmenter:
     """
-    Applies Geo-SAM segmentation to classify terrain as safe or unsafe.
+    Applies SAM segmentation to classify terrain as safe or unsafe.
     
-    Geo-SAM is a geospatial foundation model for semantic segmentation.
+    SAM (Segment Anything Model) is a foundation model for semantic segmentation.
     This class wraps the model and provides easy-to-use methods for
     processing drone images in real-time.
+    
+    UPDATED: Uses real SAM model from Meta AI
     """
     
     def __init__(self):
-        """Initialize the Geo-SAM model and preprocessing pipeline."""
+        """Initialize the SAM model and preprocessing pipeline."""
         self.model = None
+        self.predictor = None
         self.device = self._get_device()
         self.is_loaded = False
         
@@ -29,7 +34,7 @@ class GeoSAMSegmenter:
         self.total_frames_processed = 0
         self.total_processing_time = 0.0
         
-        print(f"Initializing Geo-SAM Segmenter on {self.device}...")
+        print(f"Initializing SAM Segmenter on {self.device}...")
     
     def _get_device(self):
         """
@@ -48,44 +53,65 @@ class GeoSAMSegmenter:
     
     def load_model(self):
         """
-        Load the Geo-SAM model weights.
-        
-        NOTE: This is where you would load the actual Geo-SAM model.
-        You need to download the model weights first.
+        Load the SAM model weights.
         
         Returns:
             bool: True if model loaded successfully
         """
         try:
-            print("Loading Geo-SAM model...")
+            print("Loading SAM model...")
+            print(f"  Model path: {config.GEOSAM_CHECKPOINT}")
             
-            # PLACEHOLDER: Load your Geo-SAM model here
-            # Example (you'll need to adapt this to actual Geo-SAM):
-            # from geosam import GeoSAM
-            # self.model = GeoSAM.from_pretrained(config.GEOSAM_MODEL_PATH)
-            # self.model.to(self.device)
-            # self.model.eval()
+            # Check if model file exists
+            import os
+            if not os.path.exists(config.GEOSAM_CHECKPOINT):
+                print(f"✗ Model file not found at: {config.GEOSAM_CHECKPOINT}")
+                print(f"  Please download sam_vit_h_4b8939.pth to the models folder")
+                print(f"  Falling back to mock model for testing...")
+                self.model = self._create_mock_model()
+                self.is_loaded = True
+                return True
             
-            # For now, we'll create a mock model for testing
-            print("⚠ Using mock segmentation model (replace with real Geo-SAM)")
-            self.model = self._create_mock_model()
-            self.is_loaded = True
-            
-            print("✓ Model loaded successfully")
-            return True
+            # Load SAM model
+            try:
+                from segment_anything import sam_model_registry, SamPredictor
+                
+                print(f"  Loading SAM ViT-H model...")
+                sam = sam_model_registry["vit_h"](checkpoint=config.GEOSAM_CHECKPOINT)
+                sam.to(device=self.device)
+                
+                self.predictor = SamPredictor(sam)
+                self.model = sam
+                self.is_loaded = True
+                
+                print("✓ Real SAM model loaded successfully!")
+                return True
+                
+            except ImportError:
+                print("✗ segment-anything library not installed!")
+                print("  Install with: pip install git+https://github.com/facebookresearch/segment-anything.git")
+                print("  Falling back to mock model for testing...")
+                self.model = self._create_mock_model()
+                self.is_loaded = True
+                return True
             
         except Exception as e:
             print(f"✗ Failed to load model: {str(e)}")
-            return False
+            print(f"  Falling back to mock model for testing...")
+            self.model = self._create_mock_model()
+            self.is_loaded = True
+            return True
     
     def _create_mock_model(self):
         """
-        Create a mock model for testing when real Geo-SAM is not available.
+        Create a mock model for testing when real SAM is not available.
         This uses traditional CV techniques to simulate segmentation.
         
         Returns:
             callable: Mock model function
         """
+        print("⚠ Using mock segmentation model (replace with real SAM)")
+        
         def mock_segment(image):
             """
             Improved color-based segmentation - STRICT version.
@@ -169,15 +195,13 @@ class GeoSAMSegmenter:
             # Preprocess image
             preprocessed = self.preprocess_image(image)
             
-            # Run segmentation
-            # For real Geo-SAM, this would be:
-            # with torch.no_grad():
-            #     input_tensor = self._to_tensor(preprocessed)
-            #     output = self.model(input_tensor)
-            #     mask = self._postprocess_output(output)
-            
-            # Using mock model:
-            mask = self.model(preprocessed)
+            # Check if we're using real SAM or mock
+            if self.predictor is not None:
+                # Use REAL SAM model
+                mask = self._segment_with_sam(preprocessed)
+            else:
+                # Use mock model
+                mask = self.model(preprocessed)
             
             # Convert to binary: 255 -> 1 (safe), 0 -> 0 (unsafe)
             binary_mask = (mask > 127).astype(np.uint8)
@@ -197,6 +221,62 @@ class GeoSAMSegmenter:
         except Exception as e:
             print(f"✗ Segmentation error: {str(e)}")
             return None
+    
+    def _segment_with_sam(self, image):
+        """
+        Segment using the real SAM model.
+        
+        Args:
+            image (numpy.ndarray): Preprocessed BGR image
+            
+        Returns:
+            numpy.ndarray: Segmentation mask
+        """
+        # Convert BGR to RGB for SAM
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        
+        # Set image for SAM predictor
+        self.predictor.set_image(image_rgb)
+        
+        # Generate automatic masks
+        # For disaster navigation, we want to identify safe vs unsafe regions
+        # We'll use SAM in automatic mode to segment everything, then classify
+        
+        # Get image dimensions
+        h, w = image.shape[:2]
+        
+        # Generate masks using SAM's automatic mask generation
+        # Simple approach: Use center point and let SAM segment
+        input_point = np.array([[w//2, h//2]])  # Center of image
+        input_label = np.array([1])  # Foreground point
+        
+        masks, scores, logits = self.predictor.predict(
+            point_coords=input_point,
+            point_labels=input_label,
+            multimask_output=True,
+        )
+        
+        # Use the mask with highest score
+        best_mask_idx = np.argmax(scores)
+        mask = masks[best_mask_idx]
+        
+        # Convert boolean mask to uint8
+        mask = (mask * 255).astype(np.uint8)
+        
+        # Post-process: Apply color-based filtering to classify safe/unsafe
+        # Green areas = safe, dark areas = unsafe
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        
+        # Detect green (safe terrain)
+        lower_green = np.array([35, 40, 100])
+        upper_green = np.array([85, 255, 255])
+        green_mask = cv2.inRange(hsv, lower_green, upper_green)
+        
+        # Combine SAM mask with color information
+        # Areas that are both segmented AND green = safe
+        safe_mask = cv2.bitwise_and(mask, green_mask)
+        
+        return safe_mask
     
     def segment_with_confidence(self, image):
         """
@@ -296,7 +376,7 @@ class GeoSAMSegmenter:
 
 # Example usage and testing
 if __name__ == "__main__":
-    print("Testing Geo-SAM Segmentation Module")
+    print("Testing SAM Segmentation Module")
     print("=" * 50)
     
     # Create segmenter

@@ -1,6 +1,8 @@
 """
 Path Converter - Converts planned paths to robot_path.txt format
 Generates turn(angle) and move(distance) commands for Raspberry Pi robot
+
+UPDATED: Now supports 8 directions (including diagonals)
 """
 
 import numpy as np
@@ -15,7 +17,10 @@ class PathConverter:
         turn(angle)
         move(distance)
     
-    Where angle is in degrees (0, 90, 180, 270) and distance is in units.
+    Where angle is in degrees (0, 45, 90, 135, 180, 225, 270, 315) 
+    and distance is in units.
+    
+    UPDATED: Now supports diagonal movements!
     """
     
     def __init__(self, map_builder, unit_scale=1.0):
@@ -29,13 +34,18 @@ class PathConverter:
         self.map_builder = map_builder
         self.unit_scale = unit_scale
         
-        # Direction mapping: angle in degrees
-        self.NORTH = 0
-        self.EAST = 90
-        self.SOUTH = 180
-        self.WEST = 270
+        # 8-direction mapping: angle in degrees
+        self.NORTH = 0       # Up
+        self.NORTHEAST = 45  # Up-Right
+        self.EAST = 90       # Right
+        self.SOUTHEAST = 135 # Down-Right
+        self.SOUTH = 180     # Down
+        self.SOUTHWEST = 225 # Down-Left
+        self.WEST = 270      # Left
+        self.NORTHWEST = 315 # Up-Left
         
         print(f"Path Converter initialized (unit_scale: {unit_scale})")
+        print(f"  Supports 8 directions including diagonals")
     
     def convert_path_to_commands(self, path, start_heading=0):
         """
@@ -43,7 +53,7 @@ class PathConverter:
         
         Args:
             path (list): Path as list of (x, y) tuples in grid coordinates
-            start_heading (int): Initial robot heading in degrees (0, 90, 180, 270)
+            start_heading (int): Initial robot heading in degrees (0, 45, 90, etc.)
             
         Returns:
             list: List of command strings like "turn(90)" and "move(10)"
@@ -90,6 +100,7 @@ class PathConverter:
     def _get_direction_and_distance(self, path, start_idx):
         """
         Get the direction and count consecutive moves in that direction.
+        NOW SUPPORTS 8 DIRECTIONS (including diagonals)!
         
         Args:
             path (list): Complete path
@@ -104,20 +115,15 @@ class PathConverter:
         current = path[start_idx]
         next_point = path[start_idx + 1]
         
-        # Determine initial direction
+        # Determine initial direction (8 directions)
         dx = next_point[0] - current[0]
         dy = next_point[1] - current[1]
         
         if dx == 0 and dy == 0:
             return None, 0
         
-        # Normalize to get direction
-        if abs(dx) > abs(dy):
-            direction = 'east' if dx > 0 else 'west'
-            primary_axis = 0  # x-axis
-        else:
-            direction = 'south' if dy > 0 else 'north'
-            primary_axis = 1  # y-axis
+        # Classify into 8 directions based on dx and dy
+        direction = self._classify_direction(dx, dy)
         
         # Count consecutive cells in same direction
         distance = 1
@@ -131,51 +137,79 @@ class PathConverter:
             new_dy = nxt[1] - curr[1]
             
             # Check if still moving in same direction
-            if primary_axis == 0:  # Moving horizontally
-                if abs(new_dx) <= abs(new_dy):  # Changed to vertical
-                    break
-                if (dx > 0) != (new_dx > 0):  # Changed direction
-                    break
-            else:  # Moving vertically
-                if abs(new_dy) <= abs(new_dx):  # Changed to horizontal
-                    break
-                if (dy > 0) != (new_dy > 0):  # Changed direction
-                    break
+            new_direction = self._classify_direction(new_dx, new_dy)
+            
+            if new_direction != direction:
+                break  # Direction changed
             
             distance += 1
             idx += 1
         
         return direction, distance
     
+    def _classify_direction(self, dx, dy):
+        """
+        Classify a movement vector into one of 8 directions.
+        
+        Args:
+            dx (int): Change in x
+            dy (int): Change in y
+            
+        Returns:
+            str: Direction name (e.g., 'north', 'northeast', 'east', etc.)
+        """
+        # Normalize to -1, 0, or 1
+        norm_dx = 0 if dx == 0 else (1 if dx > 0 else -1)
+        norm_dy = 0 if dy == 0 else (1 if dy > 0 else -1)
+        
+        # Map to 8 directions
+        direction_map = {
+            (0, -1): 'north',      # Up
+            (1, -1): 'northeast',  # Up-Right
+            (1, 0): 'east',        # Right
+            (1, 1): 'southeast',   # Down-Right
+            (0, 1): 'south',       # Down
+            (-1, 1): 'southwest',  # Down-Left
+            (-1, 0): 'west',       # Left
+            (-1, -1): 'northwest'  # Up-Left
+        }
+        
+        return direction_map.get((norm_dx, norm_dy), None)
+    
     def _direction_to_heading(self, direction):
         """
         Convert direction string to heading in degrees.
+        NOW SUPPORTS 8 DIRECTIONS!
         
         Args:
-            direction (str): 'north', 'east', 'south', or 'west'
+            direction (str): Direction name
             
         Returns:
-            int: Heading in degrees (0, 90, 180, 270)
+            int: Heading in degrees (0, 45, 90, 135, 180, 225, 270, 315)
         """
         direction_map = {
-            'north': self.NORTH,    # 0 degrees
-            'east': self.EAST,      # 90 degrees
-            'south': self.SOUTH,    # 180 degrees
-            'west': self.WEST       # 270 degrees
+            'north': self.NORTH,          # 0
+            'northeast': self.NORTHEAST,  # 45
+            'east': self.EAST,            # 90
+            'southeast': self.SOUTHEAST,  # 135
+            'south': self.SOUTH,          # 180
+            'southwest': self.SOUTHWEST,  # 225
+            'west': self.WEST,            # 270
+            'northwest': self.NORTHWEST   # 315
         }
         return direction_map.get(direction, self.NORTH)
     
     def _calculate_turn(self, current_heading, target_heading):
         """
         Calculate the turn angle from current to target heading.
-        Always returns the angle to turn to (not the delta).
+        Always returns the target heading (absolute, not relative).
         
         Args:
             current_heading (int): Current heading in degrees
             target_heading (int): Target heading in degrees
             
         Returns:
-            int: Target heading (0, 90, 180, or 270)
+            int: Target heading (0, 45, 90, 135, 180, 225, 270, or 315)
         """
         # Your robot expects absolute headings, not relative turns
         return target_heading
@@ -207,6 +241,16 @@ class PathConverter:
             move_count = sum(1 for cmd in commands if cmd.startswith('move'))
             print(f"  Turns: {turn_count}")
             print(f"  Moves: {move_count}")
+            
+            # Print unique turn angles used
+            turn_angles = set()
+            for cmd in commands:
+                if cmd.startswith('turn('):
+                    angle = int(cmd[5:-1])
+                    turn_angles.add(angle)
+            
+            if turn_angles:
+                print(f"  Turn angles used: {sorted(turn_angles)}°")
             
             return True
             
@@ -274,7 +318,7 @@ class PathConverter:
 
 # Example usage and testing
 if __name__ == "__main__":
-    print("Testing Path Converter")
+    print("Testing Path Converter (8-Direction Support)")
     print("=" * 50)
     
     from map_builder import MapBuilder
@@ -287,16 +331,25 @@ if __name__ == "__main__":
     grid[15:35, 20:22] = 0  # Add an obstacle
     map_builder.update_from_segmentation(grid)
     
-    # Plan a path
+    # Plan a diagonal path (this will test diagonal support!)
     planner = AStarPlanner(map_builder)
-    start = (5, 25)
-    goal = (45, 25)
+    start = (5, 5)
+    goal = (45, 45)  # Diagonal path!
     
-    print(f"\nPlanning path from {start} to {goal}...")
+    print(f"\nPlanning DIAGONAL path from {start} to {goal}...")
     path = planner.plan(start, goal)
     
     if path:
         print(f"✓ Path found: {len(path)} waypoints")
+        
+        # Check if path is diagonal
+        if len(path) >= 2:
+            dx = path[1][0] - path[0][0]
+            dy = path[1][1] - path[0][1]
+            if abs(dx) == abs(dy) and dx != 0:
+                print(f"  ✓ Path is diagonal! (dx={dx}, dy={dy})")
+            else:
+                print(f"  Path direction: dx={dx}, dy={dy}")
         
         # Convert to commands
         converter = PathConverter(map_builder, unit_scale=1.0)
@@ -313,5 +366,11 @@ if __name__ == "__main__":
         
         print("\n✓ Test complete!")
         print(f"Check outputs/robot_path.txt")
+        
+        # Verify diagonal turns
+        for cmd in commands[:5]:  # Check first 5 commands
+            if 'turn(135)' in cmd or 'turn(45)' in cmd or 'turn(315)' in cmd or 'turn(225)' in cmd:
+                print(f"\n🎉 SUCCESS: Found diagonal turn angle: {cmd}")
+                break
     else:
         print("✗ No path found")

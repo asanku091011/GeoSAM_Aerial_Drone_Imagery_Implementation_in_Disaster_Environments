@@ -18,8 +18,8 @@ DRONE_FPS = 30
 # SEGMENTATION CONFIGURATION
 # =====================================================
 # Path to the Geo-SAM model weights (you must download these)
+GEOSAM_CHECKPOINT = r"C:\Users\sanku\Documents\RSEF\models\sam_vit_h_4b8939.pth"
 GEOSAM_MODEL_PATH = "models/geosam_weights.pth"
-GEOSAM_CHECKPOINT = "models/sam_vit_h_4b8939.pth"  # SAM backbone weights
 
 # Image processing settings
 SEGMENTATION_INPUT_SIZE = (512, 512)  # Resize input for faster processing
@@ -40,7 +40,8 @@ MAP_WIDTH = 100
 MAP_HEIGHT = 100
 
 # Obstacle inflation radius (cells) - adds safety buffer around obstacles
-OBSTACLE_INFLATION_RADIUS = 2
+# SET TO 0 to avoid false collision detection
+OBSTACLE_INFLATION_RADIUS = 0
 
 # Map update settings
 MAP_UPDATE_THRESHOLD = 0.15  # 15% change triggers replanning
@@ -71,6 +72,7 @@ GREEDY_STEP_SIZE = 1  # cells
 # DYNAMIC REPLANNING CONFIGURATION
 # =====================================================
 # Enable dynamic replanning when environment changes
+# SET TO FALSE for simpler navigation
 DYNAMIC_REPLANNING_ENABLED = False
 
 # Minimum time between replanning attempts (seconds)
@@ -94,7 +96,7 @@ WAYPOINT_REACHED_THRESHOLD = 0.15  # meters
 CONTROLLER_UPDATE_RATE = 10  # Hz
 
 # Movement command output
-COMMAND_OUTPUT_FILE = "outputs/robot_commands.txt"
+COMMAND_OUTPUT_FILE = "outputs/robot_path.txt"
 COMMAND_FORMAT = "json"  # 'json' or 'simple'
 
 # =====================================================
@@ -140,6 +142,7 @@ REQUIRED_DIRS = [
     "logs",
     "outputs",
     "outputs/visualizations",
+    "data/test_images",
     "data/recorded_videos"  # For testing without drone
 ]
 
@@ -184,5 +187,7 @@ if __name__ == "__main__":
     print(f"✓ Grid resolution: {GRID_RESOLUTION}m per cell")
     print(f"✓ Map size: {MAP_WIDTH}x{MAP_HEIGHT} cells")
     print(f"✓ System update rate: {SYSTEM_UPDATE_RATE} Hz")
+    print(f"✓ Dynamic replanning: {DYNAMIC_REPLANNING_ENABLED}")
+    print(f"✓ Obstacle inflation: {OBSTACLE_INFLATION_RADIUS} cells")
     print("=" * 50)
     print("Configuration loaded successfully!")
