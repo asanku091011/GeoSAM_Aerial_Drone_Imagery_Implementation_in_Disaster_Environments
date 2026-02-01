@@ -1074,3 +1074,185 @@ Started: 2026-01-31T21:21:12.634388
 [21:26:14] PLANNING: {"timestamp": 1769912774.731854, "type": "planning", "algorithm": "astar", "processing_time": 0.0002353191375732422, "path_length": 5, "success": true}
 [21:26:17] PLANNING: {"timestamp": 1769912777.3761947, "type": "planning", "algorithm": "astar", "processing_time": 0.00010347366333007812, "path_length": 4, "success": true}
 [21:26:20] PLANNING: {"timestamp": 1769912780.154287, "type": "planning", "algorithm": "astar", "processing_time": 0.0001742839813232422, "path_length": 3, "success": true}
+
+======================================================================
+Session: 20260131_213722
+Started: 2026-01-31T21:37:22.641749
+======================================================================
+
+[21:37:30] PLANNING: {"timestamp": 1769913450.592928, "type": "planning", "algorithm": "astar", "processing_time": 0.04583477973937988, "path_length": 4, "success": true}
+
+======================================================================
+Session: 20260131_214004
+Started: 2026-01-31T21:40:04.665288
+======================================================================
+
+[21:40:14] PLANNING: {"timestamp": 1769913614.326029, "type": "planning", "algorithm": "astar", "processing_time": 0.04669046401977539, "path_length": 4, "success": true}
+
+======================================================================
+Session: 20260131_214118
+Started: 2026-01-31T21:41:18.277757
+======================================================================
+
+
+======================================================================
+Session: 20260131_214506
+Started: 2026-01-31T21:45:06.639495
+======================================================================
+
+
+======================================================================
+Session: 20260131_214555
+Started: 2026-01-31T21:45:55.727354
+======================================================================
+
+[21:46:02] PLANNING: {"timestamp": 1769913962.1369915, "type": "planning", "algorithm": "astar", "processing_time": 0.02891826629638672, "path_length": 4, "success": true}
+[21:46:04] PLANNING: {"timestamp": 1769913964.7255406, "type": "planning", "algorithm": "astar", "processing_time": 0.03436899185180664, "path_length": 4, "success": true}
+[21:46:07] PLANNING: {"timestamp": 1769913967.2477586, "type": "planning", "algorithm": "astar", "processing_time": 0.0395054817199707, "path_length": 4, "success": true}
+[21:46:10] PLANNING: {"timestamp": 1769913970.0107384, "type": "planning", "algorithm": "astar", "processing_time": 0.029354572296142578, "path_length": 4, "success": true}
+[21:46:12] PLANNING: {"timestamp": 1769913972.8031504, "type": "planning", "algorithm": "astar", "processing_time": 0.038951873779296875, "path_length": 4, "success": true}
+[21:46:15] PLANNING: {"timestamp": 1769913975.346439, "type": "planning", "algorithm": "astar", "processing_time": 0.04047060012817383, "path_length": 4, "success": true}
+[21:46:17] PLANNING: {"timestamp": 1769913977.9574242, "type": "planning", "algorithm": "astar", "processing_time": 0.04729056358337402, "path_length": 4, "success": true}
+[21:46:20] PLANNING: {"timestamp": 1769913980.8065674, "type": "planning", "algorithm": "astar", "processing_time": 0.02989792823791504, "path_length": 4, "success": true}
+[21:46:23] PLANNING: {"timestamp": 1769913983.602596, "type": "planning", "algorithm": "astar", "processing_time": 0.04371762275695801, "path_length": 4, "success": true}
+[21:46:26] PLANNING: {"timestamp": 1769913986.109712, "type": "planning", "algorithm": "astar", "processing_time": 0.02583456039428711, "path_length": 4, "success": true}
+[21:46:28] PLANNING: {"timestamp": 1769913988.9442601, "type": "planning", "algorithm": "astar", "processing_time": 0.030361652374267578, "path_length": 4, "success": true}
+[21:46:31] PLANNING: {"timestamp": 1769913991.5440164, "type": "planning", "algorithm": "astar", "processing_time": 0.035788774490356445, "path_length": 4, "success": true}
+[21:46:34] PLANNING: {"timestamp": 1769913994.326286, "type": "planning", "algorithm": "astar", "processing_time": 0.03326773643493652, "path_length": 4, "success": true}
+[21:46:37] PLANNING: {"timestamp": 1769913997.171062, "type": "planning", "algorithm": "astar", "processing_time": 0.07970666885375977, "path_length": 4, "success": true}
+[21:46:39] PLANNING: {"timestamp": 1769913999.8423004, "type": "planning", "algorithm": "astar", "processing_time": 0.051625728607177734, "path_length": 4, "success": true}
+[21:46:42] PLANNING: {"timestamp": 1769914002.6742697, "type": "planning", "algorithm": "astar", "processing_time": 0.05256366729736328, "path_length": 4, "success": true}
+[21:46:45] PLANNING: {"timestamp": 1769914005.571901, "type": "planning", "algorithm": "astar", "processing_time": 0.05409979820251465, "path_length": 4, "success": true}
+[21:46:48] PLANNING: {"timestamp": 1769914008.5449133, "type": "planning", "algorithm": "astar", "processing_time": 0.048742055892944336, "path_length": 4, "success": true}
+[21:46:51] PLANNING: {"timestamp": 1769914011.257678, "type": "planning", "algorithm": "astar", "processing_time": 0.04115748405456543, "path_length": 4, "success": true}
+[21:46:54] PLANNING: {"timestamp": 1769914014.038062, "type": "planning", "algorithm": "astar", "processing_time": 0.07011866569519043, "path_length": 4, "success": true}
+[21:46:56] PLANNING: {"timestamp": 1769914016.908363, "type": "planning", "algorithm": "astar", "processing_time": 0.06792044639587402, "path_length": 4, "success": true}
+[21:47:00] PLANNING: {"timestamp": 1769914020.3375614, "type": "planning", "algorithm": "astar", "processing_time": 0.04507923126220703, "path_length": 4, "success": true}
+[21:47:02] PLANNING: {"timestamp": 1769914022.928281, "type": "planning", "algorithm": "astar", "processing_time": 0.05398249626159668, "path_length": 4, "success": true}
+
+======================================================================
+Session: 20260131_220445
+Started: 2026-01-31T22:04:45.561843
+======================================================================
+
+[22:04:57] PLANNING: {"timestamp": 1769915097.3665752, "type": "planning", "algorithm": "astar", "processing_time": 0.03219938278198242, "path_length": 93, "success": true}
+
+======================================================================
+Session: 20260131_220533
+Started: 2026-01-31T22:05:33.211394
+======================================================================
+
+[22:05:40] PLANNING: {"timestamp": 1769915140.377018, "type": "planning", "algorithm": "astar", "processing_time": 0.01599860191345215, "path_length": 93, "success": true}
+
+======================================================================
+Session: 20260131_220609
+Started: 2026-01-31T22:06:09.838704
+======================================================================
+
+[22:06:16] PLANNING: {"timestamp": 1769915176.7139878, "type": "planning", "algorithm": "astar", "processing_time": 0.024077653884887695, "path_length": 93, "success": true}
+
+======================================================================
+Session: 20260131_220728
+Started: 2026-01-31T22:07:28.659589
+======================================================================
+
+[22:07:34] PLANNING: {"timestamp": 1769915254.9026113, "type": "planning", "algorithm": "astar", "processing_time": 0.014971494674682617, "path_length": 93, "success": true}
+[22:07:37] PLANNING: {"timestamp": 1769915257.57393, "type": "planning", "algorithm": "astar", "processing_time": 0.014482498168945312, "path_length": 93, "success": true}
+[22:07:40] PLANNING: {"timestamp": 1769915260.119879, "type": "planning", "algorithm": "astar", "processing_time": 0.015178203582763672, "path_length": 91, "success": true}
+[22:07:42] PLANNING: {"timestamp": 1769915262.8743703, "type": "planning", "algorithm": "astar", "processing_time": 0.03563427925109863, "path_length": 91, "success": true}
+[22:07:46] PLANNING: {"timestamp": 1769915266.0958605, "type": "planning", "algorithm": "astar", "processing_time": 0.020926237106323242, "path_length": 91, "success": true}
+[22:07:49] PLANNING: {"timestamp": 1769915269.6992137, "type": "planning", "algorithm": "astar", "processing_time": 0.03265810012817383, "path_length": 91, "success": true}
+[22:07:52] PLANNING: {"timestamp": 1769915272.2044752, "type": "planning", "algorithm": "astar", "processing_time": 0.02160501480102539, "path_length": 91, "success": true}
+[22:07:54] PLANNING: {"timestamp": 1769915274.8072488, "type": "planning", "algorithm": "astar", "processing_time": 0.03230118751525879, "path_length": 91, "success": true}
+[22:07:57] PLANNING: {"timestamp": 1769915277.882362, "type": "planning", "algorithm": "astar", "processing_time": 0.02935028076171875, "path_length": 91, "success": true}
+[22:08:00] PLANNING: {"timestamp": 1769915280.7016273, "type": "planning", "algorithm": "astar", "processing_time": 0.041112422943115234, "path_length": 91, "success": true}
+[22:08:03] PLANNING: {"timestamp": 1769915283.509623, "type": "planning", "algorithm": "astar", "processing_time": 0.03950905799865723, "path_length": 91, "success": true}
+[22:08:06] PLANNING: {"timestamp": 1769915286.1632109, "type": "planning", "algorithm": "astar", "processing_time": 0.028156518936157227, "path_length": 91, "success": true}
+[22:08:08] PLANNING: {"timestamp": 1769915288.8485627, "type": "planning", "algorithm": "astar", "processing_time": 0.029169797897338867, "path_length": 91, "success": true}
+[22:08:11] PLANNING: {"timestamp": 1769915291.666029, "type": "planning", "algorithm": "astar", "processing_time": 0.025788068771362305, "path_length": 91, "success": true}
+[22:08:14] PLANNING: {"timestamp": 1769915294.2364933, "type": "planning", "algorithm": "astar", "processing_time": 0.034108877182006836, "path_length": 91, "success": true}
+[22:08:17] PLANNING: {"timestamp": 1769915297.0414343, "type": "planning", "algorithm": "astar", "processing_time": 0.023311853408813477, "path_length": 91, "success": true}
+[22:08:19] PLANNING: {"timestamp": 1769915299.5246105, "type": "planning", "algorithm": "astar", "processing_time": 0.030987024307250977, "path_length": 91, "success": true}
+[22:08:22] PLANNING: {"timestamp": 1769915302.0256062, "type": "planning", "algorithm": "astar", "processing_time": 0.025763988494873047, "path_length": 91, "success": true}
+[22:08:24] PLANNING: {"timestamp": 1769915304.5435054, "type": "planning", "algorithm": "astar", "processing_time": 0.02886223793029785, "path_length": 91, "success": true}
+[22:08:27] PLANNING: {"timestamp": 1769915307.4118323, "type": "planning", "algorithm": "astar", "processing_time": 0.0201416015625, "path_length": 91, "success": true}
+[22:08:30] PLANNING: {"timestamp": 1769915310.1452713, "type": "planning", "algorithm": "astar", "processing_time": 0.016588211059570312, "path_length": 91, "success": true}
+[22:08:32] PLANNING: {"timestamp": 1769915312.5824418, "type": "planning", "algorithm": "astar", "processing_time": 0.01898193359375, "path_length": 91, "success": true}
+[22:08:35] PLANNING: {"timestamp": 1769915315.410919, "type": "planning", "algorithm": "astar", "processing_time": 0.0171968936920166, "path_length": 91, "success": true}
+[22:08:38] PLANNING: {"timestamp": 1769915318.1444805, "type": "planning", "algorithm": "astar", "processing_time": 0.021152257919311523, "path_length": 91, "success": true}
+[22:08:40] PLANNING: {"timestamp": 1769915320.8954434, "type": "planning", "algorithm": "astar", "processing_time": 0.02225041389465332, "path_length": 91, "success": true}
+[22:08:43] PLANNING: {"timestamp": 1769915323.7299006, "type": "planning", "algorithm": "astar", "processing_time": 0.03233194351196289, "path_length": 91, "success": true}
+
+======================================================================
+Session: 20260201_111930
+Started: 2026-02-01T11:19:30.343603
+======================================================================
+
+[11:19:38] PLANNING: {"timestamp": 1769962778.5039873, "type": "planning", "algorithm": "astar", "processing_time": 0.013610363006591797, "path_length": 93, "success": true}
+[11:19:41] PLANNING: {"timestamp": 1769962781.5948987, "type": "planning", "algorithm": "astar", "processing_time": 0.02210545539855957, "path_length": 93, "success": true}
+[11:19:44] PLANNING: {"timestamp": 1769962784.2624063, "type": "planning", "algorithm": "astar", "processing_time": 0.007472991943359375, "path_length": 73, "success": true}
+[11:19:46] PLANNING: {"timestamp": 1769962786.7681568, "type": "planning", "algorithm": "astar", "processing_time": 0.010045289993286133, "path_length": 72, "success": true}
+[11:19:49] PLANNING: {"timestamp": 1769962789.266192, "type": "planning", "algorithm": "astar", "processing_time": 0.007870197296142578, "path_length": 72, "success": true}
+[11:19:52] PLANNING: {"timestamp": 1769962792.0690892, "type": "planning", "algorithm": "astar", "processing_time": 0.003950834274291992, "path_length": 61, "success": true}
+[11:19:55] PLANNING: {"timestamp": 1769962795.0872169, "type": "planning", "algorithm": "astar", "processing_time": 0.00458526611328125, "path_length": 61, "success": true}
+[11:19:57] PLANNING: {"timestamp": 1769962797.7753005, "type": "planning", "algorithm": "astar", "processing_time": 0.004124879837036133, "path_length": 60, "success": true}
+[11:20:00] PLANNING: {"timestamp": 1769962800.6842349, "type": "planning", "algorithm": "astar", "processing_time": 0.0038483142852783203, "path_length": 52, "success": true}
+[11:20:03] PLANNING: {"timestamp": 1769962803.412247, "type": "planning", "algorithm": "astar", "processing_time": 0.003827333450317383, "path_length": 52, "success": true}
+[11:20:06] PLANNING: {"timestamp": 1769962806.1994143, "type": "planning", "algorithm": "astar", "processing_time": 0.005171298980712891, "path_length": 51, "success": true}
+[11:20:08] PLANNING: {"timestamp": 1769962808.9334986, "type": "planning", "algorithm": "astar", "processing_time": 0.0028336048126220703, "path_length": 50, "success": true}
+[11:20:11] PLANNING: {"timestamp": 1769962811.387781, "type": "planning", "algorithm": "astar", "processing_time": 0.0019211769104003906, "path_length": 49, "success": true}
+[11:20:13] PLANNING: {"timestamp": 1769962813.9220994, "type": "planning", "algorithm": "astar", "processing_time": 0.0015799999237060547, "path_length": 47, "success": true}
+[11:20:16] PLANNING: {"timestamp": 1769962816.4033678, "type": "planning", "algorithm": "astar", "processing_time": 0.0015380382537841797, "path_length": 45, "success": true}
+[11:20:19] PLANNING: {"timestamp": 1769962819.4124806, "type": "planning", "algorithm": "astar", "processing_time": 0.002298593521118164, "path_length": 43, "success": true}
+[11:20:22] PLANNING: {"timestamp": 1769962822.155347, "type": "planning", "algorithm": "astar", "processing_time": 0.001882791519165039, "path_length": 41, "success": true}
+[11:20:25] PLANNING: {"timestamp": 1769962825.2818332, "type": "planning", "algorithm": "astar", "processing_time": 0.001943349838256836, "path_length": 41, "success": true}
+[11:20:28] PLANNING: {"timestamp": 1769962828.0240517, "type": "planning", "algorithm": "astar", "processing_time": 0.0025479793548583984, "path_length": 37, "success": true}
+[11:20:30] PLANNING: {"timestamp": 1769962830.522026, "type": "planning", "algorithm": "astar", "processing_time": 0.0016524791717529297, "path_length": 37, "success": true}
+[11:20:33] PLANNING: {"timestamp": 1769962833.1246397, "type": "planning", "algorithm": "astar", "processing_time": 0.0017676353454589844, "path_length": 36, "success": true}
+[11:20:35] PLANNING: {"timestamp": 1769962835.5979252, "type": "planning", "algorithm": "astar", "processing_time": 0.0017426013946533203, "path_length": 36, "success": true}
+[11:20:38] PLANNING: {"timestamp": 1769962838.437852, "type": "planning", "algorithm": "astar", "processing_time": 0.001983165740966797, "path_length": 35, "success": true}
+[11:20:40] PLANNING: {"timestamp": 1769962840.963967, "type": "planning", "algorithm": "astar", "processing_time": 0.0020797252655029297, "path_length": 35, "success": true}
+[11:20:43] PLANNING: {"timestamp": 1769962843.4672182, "type": "planning", "algorithm": "astar", "processing_time": 0.0010786056518554688, "path_length": 34, "success": true}
+[11:20:46] PLANNING: {"timestamp": 1769962846.013275, "type": "planning", "algorithm": "astar", "processing_time": 0.0012559890747070312, "path_length": 34, "success": true}
+
+======================================================================
+Session: 20260201_112127
+Started: 2026-02-01T11:21:27.150044
+======================================================================
+
+[11:21:36] PLANNING: {"timestamp": 1769962896.265547, "type": "planning", "algorithm": "astar", "processing_time": 0.049607038497924805, "path_length": 93, "success": true}
+[11:21:38] PLANNING: {"timestamp": 1769962898.8433752, "type": "planning", "algorithm": "astar", "processing_time": 0.01985788345336914, "path_length": 93, "success": true}
+[11:21:41] PLANNING: {"timestamp": 1769962901.7641487, "type": "planning", "algorithm": "astar", "processing_time": 0.005699634552001953, "path_length": 73, "success": true}
+[11:21:44] PLANNING: {"timestamp": 1769962904.4906723, "type": "planning", "algorithm": "astar", "processing_time": 0.004743337631225586, "path_length": 72, "success": true}
+[11:21:47] PLANNING: {"timestamp": 1769962907.2880635, "type": "planning", "algorithm": "astar", "processing_time": 0.0051381587982177734, "path_length": 72, "success": true}
+[11:21:50] PLANNING: {"timestamp": 1769962910.0438738, "type": "planning", "algorithm": "astar", "processing_time": 0.010475873947143555, "path_length": 61, "success": true}
+[11:21:52] PLANNING: {"timestamp": 1769962912.5974832, "type": "planning", "algorithm": "astar", "processing_time": 0.004743814468383789, "path_length": 61, "success": true}
+[11:21:55] PLANNING: {"timestamp": 1769962915.4717126, "type": "planning", "algorithm": "astar", "processing_time": 0.005514383316040039, "path_length": 60, "success": true}
+[11:21:57] PLANNING: {"timestamp": 1769962917.918407, "type": "planning", "algorithm": "astar", "processing_time": 0.003804922103881836, "path_length": 52, "success": true}
+[11:22:00] PLANNING: {"timestamp": 1769962920.7939386, "type": "planning", "algorithm": "astar", "processing_time": 0.003444194793701172, "path_length": 52, "success": true}
+[11:22:03] PLANNING: {"timestamp": 1769962923.3855028, "type": "planning", "algorithm": "astar", "processing_time": 0.00392603874206543, "path_length": 51, "success": true}
+[11:22:05] PLANNING: {"timestamp": 1769962925.9771082, "type": "planning", "algorithm": "astar", "processing_time": 0.002298593521118164, "path_length": 50, "success": true}
+[11:22:08] PLANNING: {"timestamp": 1769962928.4655733, "type": "planning", "algorithm": "astar", "processing_time": 0.0020356178283691406, "path_length": 49, "success": true}
+[11:22:11] PLANNING: {"timestamp": 1769962931.1502059, "type": "planning", "algorithm": "astar", "processing_time": 0.0018911361694335938, "path_length": 47, "success": true}
+[11:22:13] PLANNING: {"timestamp": 1769962933.676733, "type": "planning", "algorithm": "astar", "processing_time": 0.004019260406494141, "path_length": 45, "success": true}
+[11:22:16] PLANNING: {"timestamp": 1769962936.3590367, "type": "planning", "algorithm": "astar", "processing_time": 0.004517793655395508, "path_length": 43, "success": true}
+[11:22:19] PLANNING: {"timestamp": 1769962939.1502733, "type": "planning", "algorithm": "astar", "processing_time": 0.0027048587799072266, "path_length": 41, "success": true}
+[11:22:22] PLANNING: {"timestamp": 1769962942.0390244, "type": "planning", "algorithm": "astar", "processing_time": 0.003376007080078125, "path_length": 41, "success": true}
+[11:22:25] PLANNING: {"timestamp": 1769962945.016222, "type": "planning", "algorithm": "astar", "processing_time": 0.002523183822631836, "path_length": 37, "success": true}
+[11:22:27] PLANNING: {"timestamp": 1769962947.8851297, "type": "planning", "algorithm": "astar", "processing_time": 0.0032968521118164062, "path_length": 37, "success": true}
+[11:22:30] PLANNING: {"timestamp": 1769962950.441636, "type": "planning", "algorithm": "astar", "processing_time": 0.0023648738861083984, "path_length": 36, "success": true}
+[11:22:32] PLANNING: {"timestamp": 1769962952.9693491, "type": "planning", "algorithm": "astar", "processing_time": 0.0012254714965820312, "path_length": 36, "success": true}
+[11:22:35] PLANNING: {"timestamp": 1769962955.49356, "type": "planning", "algorithm": "astar", "processing_time": 0.004826784133911133, "path_length": 35, "success": true}
+[11:22:38] PLANNING: {"timestamp": 1769962958.2768927, "type": "planning", "algorithm": "astar", "processing_time": 0.0019130706787109375, "path_length": 35, "success": true}
+[11:22:41] PLANNING: {"timestamp": 1769962961.139912, "type": "planning", "algorithm": "astar", "processing_time": 0.0009832382202148438, "path_length": 34, "success": true}
+[11:22:43] PLANNING: {"timestamp": 1769962963.759931, "type": "planning", "algorithm": "astar", "processing_time": 0.0011942386627197266, "path_length": 34, "success": true}
+
+======================================================================
+Session: 20260201_112354
+Started: 2026-02-01T11:23:54.915833
+======================================================================
+
+[11:24:01] PLANNING: {"timestamp": 1769963041.4702382, "type": "planning", "algorithm": "astar", "processing_time": 0.059757232666015625, "path_length": 4, "success": true}
+[11:24:04] PLANNING: {"timestamp": 1769963044.2628999, "type": "planning", "algorithm": "astar", "processing_time": 0.06175374984741211, "path_length": 4, "success": true}
+[11:24:06] PLANNING: {"timestamp": 1769963046.8696406, "type": "planning", "algorithm": "astar", "processing_time": 0.05069303512573242, "path_length": 4, "success": true}
+[11:24:09] PLANNING: {"timestamp": 1769963049.4331946, "type": "planning", "algorithm": "astar", "processing_time": 0.03686356544494629, "path_length": 4, "success": true}

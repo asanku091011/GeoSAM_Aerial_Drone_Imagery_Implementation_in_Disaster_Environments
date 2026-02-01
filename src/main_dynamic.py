@@ -1,6 +1,9 @@
 """
-Dynamic Real-Time Navigation System
-Continuously replans, sends commands one at a time, and visualizes progress
+ULTIMATE Dynamic Navigation System
+- Coordinate system fixed ✓
+- Dynamic image reloading ✓
+- Smooth 360° paths ✓
+- Real-time replanning ✓
 """
 
 import sys
@@ -15,363 +18,393 @@ os.environ["OPENCV_FFMPEG_LOGLEVEL"] = "-8"
 import config
 
 # Import all system components
-from image_input import ImageInput
+from dynamic_image_input import DynamicImageInput  # ← DYNAMIC IMAGES!
 from segmentation import GeoSAMSegmenter
 from map_builder import MapBuilder
-from astar import AStarPlanner
+from astar_smooth import AStarSmoothPlanner  # ← SMOOTH 360° PATHS!
 from rrt_star import RRTStarPlanner
 from greedy import GreedyPlanner
-from path_converter import PathConverter
+from path_converter_smooth import SmoothPathConverter  # ← SMOOTH CONVERTER!
 from data_logger import DataLogger
-from dynamic_image_input import DynamicImageInput
 
 
 class DynamicNavigationSystem:
     """
-    Real-time dynamic navigation with continuous replanning.
-    
-    This system:
-    1. Plans initial path to goal
-    2. Sends FIRST command to robot
-    3. Updates image/map
-    4. Replans path from current position
-    5. Sends NEXT command
-    6. Repeat until goal reached
+    Ultimate real-time dynamic navigation with:
+    - Continuous replanning
+    - Dynamic image updates
+    - Smooth 360° paths
+    - Correct coordinate system
     """
     
-    def __init__(self, pi_hostname="192.168.1.10", pi_username="asanku"):
-        """Initialize the dynamic navigation system."""
+    def __init__(self):
         print("\n" + "="*70)
-        print("🚁 DYNAMIC REAL-TIME NAVIGATION SYSTEM")
+        print("🚁 ULTIMATE DYNAMIC NAVIGATION SYSTEM")
         print("="*70)
-        print("Initializing components...\n")
+        print("Features:")
+        print("  ✓ Dynamic image reloading")
+        print("  ✓ Smooth 360° path planning")
+        print("  ✓ Fixed coordinate system")
+        print("  ✓ Real-time replanning")
+        print("="*70)
+        print("\nInitializing components...\n")
         
-        # Components
+        # DYNAMIC IMAGE INPUT
         self.image_input = DynamicImageInput("data/test_images/current_scene.jpg")
+        
+        # Segmentation
         self.segmenter = GeoSAMSegmenter()
+        
+        # Map builder
         self.map_builder = MapBuilder()
-        self.path_converter = PathConverter(self.map_builder, unit_scale=1.0)
+        
+        # SMOOTH PATH CONVERTER (360° angles)
+        self.path_converter = SmoothPathConverter(self.map_builder, unit_scale=1.0)
+        
+        # Data logger
+        config.create_directories()
         self.logger = DataLogger()
         
-        # Planners
+        # Create planners - SMOOTH A*!
         self.planners = {
-            'astar': AStarPlanner(self.map_builder),
+            'astar': AStarSmoothPlanner(self.map_builder),  # ← SMOOTH!
             'rrt_star': RRTStarPlanner(self.map_builder),
             'greedy': GreedyPlanner(self.map_builder)
         }
+        
+        # State tracking
         self.current_algorithm = config.DEFAULT_ALGORITHM
-        
-        # Robot communication
-        self.pi_hostname = pi_hostname
-        self.pi_username = pi_username
-        self.pi_commands_dir = "/home/asanku/Documents/RSEF/movements"
-        
-        # Navigation state
-        self.current_position_grid = None  # Current position in grid coords
+        self.current_position_grid = None
+        self.current_heading = 0.0  # Continuous angles now!
         self.goal_position = None
-        self.current_path = None
-        self.current_heading = 0  # Current robot heading in degrees
-        self.commands_sent = []
         self.iteration = 0
+        self.commands_sent = []
+        self.robot_connected = False  # Will be checked during setup
         
-        # Visualization windows
-        self.vis_width = 500
-        self.vis_height = 500
+        # Visualization
+        self.vis_width = 640
+        self.vis_height = 480
         
         print("✓ All components initialized\n")
     
     def setup(self):
-        """Setup the system."""
+        """Setup system."""
         print("Setting up system...")
         
-        # Load image
-        print("\n[1/3] Loading test image...")
+        print("\n[1/4] Loading dynamic image...")
         if not self.image_input.connect():
+            print("✗ Image loading failed")
             return False
         self.image_input.start_stream()
-        time.sleep(0.5)
         
-        # Load model
-        print("\n[2/3] Loading segmentation model...")
+        print("\n[2/4] Loading segmentation model...")
         if not self.segmenter.load_model():
+            print("✗ Model loading failed")
             return False
         
-        # Verify frame
-        print("\n[3/3] Verifying image input...")
+        print("\n[3/4] Verifying image input...")
         test_frame = self.image_input.get_frame()
         if test_frame is None:
-            print("✗ Cannot receive image")
+            print("✗ Cannot get frames")
             return False
         
-        print("\n✓ System setup complete!\n")
+        print("\n[4/4] Checking robot connection...")
+        self._check_robot_connection()
+        
+        print("\n✓ System setup complete!")
         return True
+    
+    def _check_robot_connection(self):
+        """Check if Raspberry Pi robot is reachable."""
+        try:
+            result = subprocess.run(
+                ['ping', '-n', '1', '-w', '1000', '192.168.1.10'],
+                capture_output=True,
+                timeout=2
+            )
+            
+            if result.returncode == 0:
+                print("  ✓ Robot Pi reachable at 192.168.1.10")
+                print("  ✓ Commands will be sent via SCP")
+                self.robot_connected = True
+            else:
+                print("  ⚠ Robot Pi not responding")
+                print("  ⚠ Running in SIMULATION mode (no actual robot)")
+                self.robot_connected = False
+                
+        except Exception as e:
+            print(f"  ⚠ Connection check failed: {e}")
+            print("  ⚠ Running in SIMULATION mode")
+            self.robot_connected = False
     
     def set_navigation_goal(self, start_grid, goal_grid):
         """Set start and goal positions."""
         self.current_position_grid = start_grid
         self.goal_position = goal_grid
-        self.current_heading = 0
         
+        print(f"\n✓ Algorithm: {self.current_algorithm}")
         print(f"Navigation goal set:")
         print(f"  Start: {start_grid}")
         print(f"  Goal: {goal_grid}")
     
-    def select_algorithm(self, algorithm_name):
-        """Select planning algorithm."""
-        if algorithm_name in self.planners:
-            self.current_algorithm = algorithm_name
-            print(f"✓ Algorithm: {algorithm_name}")
-        else:
-            print(f"⚠ Unknown algorithm, using {config.DEFAULT_ALGORITHM}")
-            self.current_algorithm = config.DEFAULT_ALGORITHM
-    
-    def run_dynamic_navigation(self):
-        """
-        Main dynamic navigation loop.
-        Plans → Send one command → Update → Replan → Repeat
-        """
+    def run(self):
+        """Main navigation loop."""
         print("\n" + "="*70)
         print("🤖 STARTING DYNAMIC NAVIGATION")
         print("="*70)
-        print("\nControls:")
+        print("Controls:")
         print("  SPACE - Pause/Resume")
         print("  Q - Quit")
         print("  R - Force replan")
-        print("\n")
+        print("="*70)
         
-        self.iteration = 0
         paused = False
-        
-        # Create visualization windows
-        cv2.namedWindow("1. Current Image", cv2.WINDOW_NORMAL)
-        cv2.namedWindow("2. Segmentation", cv2.WINDOW_NORMAL)
-        cv2.namedWindow("3. Navigation Map", cv2.WINDOW_NORMAL)
-        cv2.namedWindow("4. Progress Tracker", cv2.WINDOW_NORMAL)
         
         try:
             while True:
                 self.iteration += 1
                 
-                # Check for keyboard input
+                # Check keyboard
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord('q'):
                     print("\n⚠ User requested quit")
                     break
                 elif key == ord(' '):
                     paused = not paused
-                    if paused:
-                        print("\n⏸ PAUSED - Press SPACE to resume")
-                    else:
-                        print("▶ RESUMED")
+                    print(f"\n{'⏸ PAUSED' if paused else '▶ RESUMED'}")
+                    continue
                 elif key == ord('r'):
-                    print("\n🔄 Forced replan requested")
+                    print("\n🔄 Force replan requested")
                 
                 if paused:
                     time.sleep(0.1)
                     continue
                 
+                # Print iteration header
                 print(f"\n{'='*70}")
                 print(f"ITERATION {self.iteration}")
                 print(f"{'='*70}")
                 print(f"Current position: {self.current_position_grid}")
-                print(f"Current heading: {self.current_heading}°")
+                print(f"Current heading: {self.current_heading:.1f}°")
+                print(f"Goal position: {self.goal_position}")
                 
-                # Step 1: Get fresh image and segment
-                print("\n[Step 1/5] Capturing and segmenting image...")
-                if not self._update_map():
-                    print("⚠ Map update failed, using previous map")
+                # Calculate distance to goal
+                if self.current_position_grid and self.goal_position:
+                    dx = self.goal_position[0] - self.current_position_grid[0]
+                    dy = self.goal_position[1] - self.current_position_grid[1]
+                    dist_to_goal = np.sqrt(dx**2 + dy**2)
+                    print(f"Distance to goal: {dist_to_goal:.1f} cells")
+                    
+                    # Check if goal reached
+                    if dist_to_goal < 2:
+                        print("\n" + "="*70)
+                        print("🎉 GOAL REACHED!")
+                        print("="*70)
+                        break
                 
-                # Step 2: Check if we reached goal
-                if self._check_goal_reached():
-                    print("\n" + "="*70)
-                    print("🎉 GOAL REACHED!")
-                    print("="*70)
-                    self._show_success_visualization()
-                    break
+                # STEP 1: Capture and segment (with dynamic reload!)
+                if not self._capture_and_segment():
+                    continue
                 
-                # Step 3: Plan path from current position to goal
-                print(f"\n[Step 2/5] Planning path using {self.current_algorithm}...")
+                # STEP 2: Plan smooth 360° path
                 path = self._plan_path()
-                
-                if not path or len(path) < 2:
-                    print("✗ No path found! Navigation failed.")
+                if not path:
+                    print("⚠ Planning failed")
                     break
                 
-                self.current_path = path
-                print(f"✓ Path planned: {len(path)} waypoints")
-                
-                # Step 4: Generate commands for entire path
-                print("\n[Step 3/5] Converting path to commands...")
-                commands = self.path_converter.convert_path_to_commands(
-                    path, 
-                    start_heading=self.current_heading
-                )
-                
+                # STEP 3: Convert to smooth commands
+                commands = self._convert_path(path)
                 if not commands:
-                    print("✗ No commands generated!")
+                    print("⚠ No commands generated")
                     break
                 
-                print(f"✓ Generated {len(commands)} commands")
+                # STEP 4: Send FIRST command only
+                if not self._send_first_command(commands):
+                    continue
                 
-                # Step 5: Send ONLY the first command to robot
-                print("\n[Step 4/5] Sending first command to robot...")
-                first_command = commands[0]
+                # STEP 5: Update robot state with FIXED coordinates
+                self._update_robot_state(commands[0], path)
                 
-                success = self._send_single_command(first_command)
-                
-                if not success:
-                    print("✗ Failed to send command to robot")
-                    break
-                
-                self.commands_sent.append(first_command)
-                print(f"✓ Sent: {first_command}")
-                
-                # Step 6: Update robot state based on command
-                print("\n[Step 5/5] Updating robot state...")
-                self._update_robot_state(first_command, path)
-                
-                # Step 7: Visualize current state
+                # STEP 6: Visualize
                 self._visualize_state(path)
                 
-                # Wait a moment before next iteration
-                print(f"\n⏳ Waiting before next iteration...")
-                time.sleep(2)  # Give robot time to execute
-        
+                # Wait before next iteration
+                print("⏳ Waiting before next iteration...")
+                time.sleep(2)
+                
         except KeyboardInterrupt:
-            print("\n\n⚠ Navigation interrupted by user")
-        
-        except Exception as e:
-            print(f"\n✗ ERROR: {str(e)}")
-            import traceback
-            traceback.print_exc()
+            print("\n⚠ Interrupted")
         
         finally:
-            print("\n" + "="*70)
-            print("Navigation Summary:")
-            print(f"  Iterations: {self.iteration}")
-            print(f"  Commands sent: {len(self.commands_sent)}")
-            print(f"  Final position: {self.current_position_grid}")
-            print("="*70)
-            
-            # Keep windows open
-            print("\nPress any key to close visualization windows...")
-            cv2.waitKey(0)
+            self._print_summary()
     
-    def _update_map(self):
-        """Capture new image and update map."""
-        # Get image
-        image = self.image_input.get_frame()
-        if image is None:
+    def _capture_and_segment(self):
+        """Capture image and segment."""
+        print("\n[Step 1/5] Capturing and segmenting image...")
+        
+        # Get frame (automatically reloads if file changed!)
+        frame = self.image_input.get_frame()
+        if frame is None:
+            print("  ✗ No frame")
             return False
+        
+        self.current_image = frame
         
         # Segment
-        mask = self.segmenter.segment(image)
+        mask = self.segmenter.segment(frame)
         if mask is None:
+            print("  ✗ Segmentation failed")
             return False
         
+        self.current_mask = mask
+        
+        # Update map
+        self.map_builder.update_from_segmentation(mask)
+        
+        # Print stats
         stats = self.segmenter.get_statistics(mask)
         print(f"  Segmentation: {stats['safe_percentage']:.1f}% safe")
         
-        # Update map
-        success = self.map_builder.update_from_segmentation(mask)
-        
-        # Store for visualization
-        self.current_image = image
-        self.current_mask = mask
-        
-        return success
-    
-    def _check_goal_reached(self):
-        """Check if robot reached the goal."""
-        if self.current_position_grid is None or self.goal_position is None:
-            return False
-        
-        dx = abs(self.current_position_grid[0] - self.goal_position[0])
-        dy = abs(self.current_position_grid[1] - self.goal_position[1])
-        distance = np.sqrt(dx**2 + dy**2)
-        
-        # Consider goal reached if within 2 cells
-        return distance < 2
+        return True
     
     def _plan_path(self):
-        """Plan path from current position to goal."""
-        planner = self.planners[self.current_algorithm]
+        """Plan smooth 360° path."""
+        print("\n[Step 2/5] Planning path using {self.current_algorithm}...")
         
-        plan_start = time.time()
+        planner = self.planners[self.current_algorithm]
         path = planner.plan(self.current_position_grid, self.goal_position)
-        plan_time = time.time() - plan_start
         
         if path:
-            self.logger.log_planning(
-                self.current_algorithm,
-                plan_time,
-                len(path),
-                True
-            )
-        else:
-            self.logger.log_planning(
-                self.current_algorithm,
-                plan_time,
-                0,
-                False
-            )
+            print(f"✓ Path planned: {len(path)} waypoints")
         
         return path
     
-    def _send_single_command(self, command):
-        """
-        Send a single command to the Raspberry Pi.
-        Overwrites the robot_path.txt file with just this one command.
-        """
+    def _convert_path(self, path):
+        """Convert to smooth 360° commands."""
+        print("\n[Step 3/5] Converting path to commands...")
+        
+        commands = self.path_converter.convert_path_to_commands(
+            path, 
+            start_heading=self.current_heading
+        )
+        commands = self.path_converter.optimize_commands(commands)
+        
+        print(f"✓ Generated {len(commands)} commands")
+        
+        return commands
+    
+    def _send_first_command(self, commands):
+        """Send only first command to robot via SCP."""
+        print("\n[Step 4/5] Sending first command to robot...")
+        
+        if not commands:
+            return False
+        
+        first_cmd = commands[0]
+        
+        # Save to local file
         try:
-            # Create temporary file with single command
+            os.makedirs("outputs", exist_ok=True)
+            with open("outputs/robot_path.txt", 'w') as f:
+                f.write(first_cmd + '\n')
+        except Exception as e:
+            print(f"  ✗ Local save error: {e}")
+            return False
+        
+        # Send to Raspberry Pi via SCP
+        try:
             import tempfile
-            temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt')
-            temp_file.write(command + '\n')
-            temp_file.close()
             
-            # Send via SCP
-            remote_path = f"{self.pi_username}@{self.pi_hostname}:{self.pi_commands_dir}/robot_path.txt"
+            # Create temporary file with command
+            with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as temp_file:
+                temp_file.write(first_cmd + '\n')
+                temp_path = temp_file.name
+            
+            # SCP to Pi
+            remote_path = "asanku@192.168.1.10:/home/asanku/Documents/RSEF/movements/robot_path.txt"
             
             result = subprocess.run(
-                ["scp", temp_file.name, remote_path],
+                ['scp', temp_path, remote_path],
                 capture_output=True,
-                text=True,
-                timeout=10
+                timeout=5
             )
             
-            # Clean up
-            os.unlink(temp_file.name)
+            # Clean up temp file
+            os.unlink(temp_path)
             
-            return result.returncode == 0
+            if result.returncode == 0:
+                print(f"✓ Sent to Pi: {first_cmd}")
+                self.commands_sent.append(first_cmd)
+                return True
+            else:
+                print(f"  ⚠ SCP failed (return code {result.returncode})")
+                print(f"  Command saved locally, robot may not receive it")
+                self.commands_sent.append(first_cmd)
+                return True  # Continue anyway
+                
+        except subprocess.TimeoutExpired:
+            print(f"  ⚠ SCP timeout (Pi not reachable?)")
+            print(f"  Command: {first_cmd}")
+            self.commands_sent.append(first_cmd)
+            return True  # Continue in simulation mode
             
         except Exception as e:
-            print(f"  ✗ Send error: {str(e)}")
-            return False
+            print(f"  ⚠ Send error: {str(e)}")
+            print(f"  Command: {first_cmd}")
+            self.commands_sent.append(first_cmd)
+            return True  # Continue anyway
     
     def _update_robot_state(self, command, path):
         """
-        Update robot's position and heading based on executed command.
+        Update robot state with FIXED coordinate system.
+        Handles both 8-directional AND continuous angles!
         """
+        print("\n[Step 5/5] Updating robot state...")
+        
         if command.startswith('turn('):
-            # Extract angle
-            angle = int(command[5:-1])
+            # Extract angle (can be float now!)
+            angle_str = command[5:-1]
+            angle = float(angle_str)
             self.current_heading = angle
-            print(f"  Robot turned to {angle}°")
+            print(f"  Robot turned to {angle:.1f}°")
         
         elif command.startswith('move('):
-            # Robot moved forward - update position
-            # Move to next waypoint in path
-            if len(path) > 1:
-                self.current_position_grid = path[1]
-                print(f"  Robot moved to {self.current_position_grid}")
-            else:
-                print(f"  Robot at final waypoint")
+            # Extract distance
+            distance_str = command[5:-1]
+            distance = float(distance_str)
+            
+            # Convert heading to movement vector (IMAGE coordinates!)
+            # For 360° smooth paths, use trigonometry
+            heading_rad = np.radians(self.current_heading)
+            
+            # CRITICAL: Image coordinates
+            # 0° = East (right, +X)
+            # 90° = South (down, +Y)
+            # Standard trig works if we use this convention!
+            dx = distance * np.cos(heading_rad)
+            dy = distance * np.sin(heading_rad)
+            
+            # Update position
+            old_pos = self.current_position_grid
+            new_x = old_pos[0] + dx
+            new_y = old_pos[1] + dy
+            
+            # Round to grid
+            new_x = int(round(new_x))
+            new_y = int(round(new_y))
+            
+            # Clamp
+            new_x = max(0, min(new_x, self.map_builder.width - 1))
+            new_y = max(0, min(new_y, self.map_builder.height - 1))
+            
+            self.current_position_grid = (new_x, new_y)
+            
+            print(f"  Robot moved {distance:.1f} cells at {self.current_heading:.1f}°")
+            print(f"  Direction: dx={dx:+.1f}, dy={dy:+.1f}")
+            print(f"  Position: {old_pos} → {self.current_position_grid}")
     
     def _visualize_state(self, path):
-        """
-        Create comprehensive visualization of current state.
-        """
+        """Create 4-window visualization."""
         # Window 1: Current image
         if hasattr(self, 'current_image'):
             img_vis = cv2.resize(self.current_image, (self.vis_width, self.vis_height))
@@ -387,168 +420,118 @@ class DynamicNavigationSystem:
             seg_vis = cv2.resize(seg_vis, (self.vis_width, self.vis_height))
             cv2.imshow("2. Segmentation", seg_vis)
         
-        # Window 3: Navigation map with current path
+        # Window 3: Navigation map
         map_vis = self.map_builder.visualize(
             path=path,
             start=self.current_position_grid,
             goal=self.goal_position
         )
-        
-        # Add info
-        cv2.putText(map_vis, f"Algorithm: {self.current_algorithm}", (10, 30),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
-        cv2.putText(map_vis, f"Position: {self.current_position_grid}", (10, 60),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-        cv2.putText(map_vis, f"Heading: {self.current_heading}deg", (10, 90),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-        cv2.putText(map_vis, f"Waypoints: {len(path)}", (10, 120),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-        
+        cv2.putText(map_vis, f"Heading: {self.current_heading:.1f}°", (10, 30),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
         cv2.imshow("3. Navigation Map", map_vis)
         
         # Window 4: Progress tracker
-        progress_vis = self._create_progress_visualization(path)
-        cv2.imshow("4. Progress Tracker", progress_vis)
-    
-    def _create_progress_visualization(self, path):
-        """
-        Create a progress tracking visualization.
-        Shows: commands sent, distance to goal, progress bar
-        """
-        vis = np.ones((400, 600, 3), dtype=np.uint8) * 255
+        tracker = np.zeros((400, 600, 3), dtype=np.uint8)
+        tracker[:] = (40, 40, 40)
         
-        # Title
-        cv2.putText(vis, "Navigation Progress", (20, 40),
-                   cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 0), 2)
+        y_pos = 40
+        cv2.putText(tracker, f"ITERATION: {self.iteration}", (20, y_pos),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
         
-        # Iteration count
-        cv2.putText(vis, f"Iteration: {self.iteration}", (20, 80),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
+        y_pos += 35
+        # Show robot connection status
+        if self.robot_connected:
+            status_text = "Robot: CONNECTED"
+            status_color = (0, 255, 0)
+        else:
+            status_text = "Robot: SIMULATION"
+            status_color = (100, 100, 255)
+        cv2.putText(tracker, status_text, (20, y_pos),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, status_color, 2)
         
-        # Commands sent
-        cv2.putText(vis, f"Commands sent: {len(self.commands_sent)}", (20, 110),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
+        y_pos += 35
+        cv2.putText(tracker, f"Position: {self.current_position_grid}", (20, y_pos),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
         
-        # Last command
-        if self.commands_sent:
-            cv2.putText(vis, f"Last: {self.commands_sent[-1]}", (20, 140),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 100, 0), 2)
+        y_pos += 30
+        cv2.putText(tracker, f"Heading: {self.current_heading:.1f}°", (20, y_pos),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
         
-        # Distance to goal
+        y_pos += 30
         if self.current_position_grid and self.goal_position:
             dx = self.goal_position[0] - self.current_position_grid[0]
             dy = self.goal_position[1] - self.current_position_grid[1]
-            distance = np.sqrt(dx**2 + dy**2)
-            
-            cv2.putText(vis, f"Distance to goal: {distance:.1f} cells", (20, 180),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
+            dist = np.sqrt(dx**2 + dy**2)
+            cv2.putText(tracker, f"Distance to goal: {dist:.1f}", (20, y_pos),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 1)
             
             # Progress bar
-            start_dist = np.sqrt(
-                (self.goal_position[0] - config.TEST_START_POSITION[0])**2 +
-                (self.goal_position[1] - config.TEST_START_POSITION[1])**2
+            y_pos += 50
+            total_dist = np.sqrt(
+                (self.goal_position[0] - 10)**2 + 
+                (self.goal_position[1] - 10)**2
             )
+            progress = max(0, min(1, 1 - dist / total_dist))
             
-            if start_dist > 0:
-                progress = 1 - (distance / start_dist)
-                progress = max(0, min(1, progress))
-                
-                # Draw progress bar
-                bar_x = 20
-                bar_y = 220
-                bar_w = 560
-                bar_h = 40
-                
-                # Background
-                cv2.rectangle(vis, (bar_x, bar_y), (bar_x + bar_w, bar_y + bar_h),
-                            (200, 200, 200), -1)
-                
-                # Progress
-                progress_w = int(bar_w * progress)
-                cv2.rectangle(vis, (bar_x, bar_y), (bar_x + progress_w, bar_y + bar_h),
-                            (0, 255, 0), -1)
-                
-                # Border
-                cv2.rectangle(vis, (bar_x, bar_y), (bar_x + bar_w, bar_y + bar_h),
-                            (0, 0, 0), 2)
-                
-                # Percentage
-                cv2.putText(vis, f"{progress*100:.1f}%", (bar_x + bar_w//2 - 40, bar_y + 28),
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
+            cv2.rectangle(tracker, (20, y_pos), (580, y_pos + 30), (100, 100, 100), 2)
+            bar_width = int(560 * progress)
+            cv2.rectangle(tracker, (20, y_pos), (20 + bar_width, y_pos + 30), (0, 255, 0), -1)
+            
+            cv2.putText(tracker, f"{progress*100:.0f}%", (270, y_pos + 22),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
         
-        # Recent commands list
-        cv2.putText(vis, "Recent Commands:", (20, 290),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
+        y_pos += 60
+        cv2.putText(tracker, f"Commands sent: {len(self.commands_sent)}", (20, y_pos),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
         
-        recent = self.commands_sent[-5:] if len(self.commands_sent) > 5 else self.commands_sent
-        for i, cmd in enumerate(recent):
-            cv2.putText(vis, f"  {len(self.commands_sent) - len(recent) + i + 1}. {cmd}",
-                       (30, 320 + i*25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 100, 100), 1)
+        # Recent commands
+        y_pos += 40
+        cv2.putText(tracker, "Recent commands:", (20, y_pos),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150, 150, 150), 1)
         
-        return vis
+        for i, cmd in enumerate(self.commands_sent[-5:]):
+            y_pos += 25
+            cv2.putText(tracker, f"  {cmd}", (30, y_pos),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.4, (180, 180, 180), 1)
+        
+        cv2.imshow("4. Progress Tracker", tracker)
     
-    def _show_success_visualization(self):
-        """Show success message on visualization."""
-        success_vis = np.ones((400, 600, 3), dtype=np.uint8) * 255
-        
-        cv2.putText(success_vis, "GOAL REACHED!", (100, 200),
-                   cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 200, 0), 3)
-        
-        cv2.putText(success_vis, f"Total iterations: {self.iteration}", (150, 250),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
-        
-        cv2.putText(success_vis, f"Commands sent: {len(self.commands_sent)}", (150, 280),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
-        
-        cv2.imshow("4. Progress Tracker", success_vis)
-    
-    def shutdown(self):
-        """Cleanup."""
-        print("\nShutting down...")
-        self.logger.save_to_csv()
-        self.logger.save_events()
-        self.logger.print_summary()
-        self.image_input.disconnect()
+    def _print_summary(self):
+        """Print navigation summary."""
+        print("\n" + "="*70)
+        print("Navigation Summary:")
+        print(f"  Iterations: {self.iteration}")
+        print(f"  Commands sent: {len(self.commands_sent)}")
+        print(f"  Final position: {self.current_position_grid}")
+        print("="*70)
+        print("Press any key to close visualization windows...")
+        cv2.waitKey(0)
         cv2.destroyAllWindows()
+        
+        print("\nShutting down...")
+        self.image_input.disconnect()
         print("✓ Shutdown complete")
 
 
 def main():
     """Main entry point."""
-    system = DynamicNavigationSystem(
-        pi_hostname="192.168.1.10",
-        pi_username="asanku"
-    )
+    # Create system
+    system = DynamicNavigationSystem()
     
-    try:
-        # Setup
-        if not system.setup():
-            print("✗ Setup failed")
-            return 1
-        
-        # Select algorithm
-        algorithm = sys.argv[1] if len(sys.argv) > 1 else config.DEFAULT_ALGORITHM
-        system.select_algorithm(algorithm)
-        
-        # Set goal
-        system.set_navigation_goal(
-            config.TEST_START_POSITION,
-            config.TEST_GOAL_POSITION
-        )
-        
-        # Run dynamic navigation
-        system.run_dynamic_navigation()
-        
-        return 0
-    
-    except Exception as e:
-        print(f"\n✗ FATAL ERROR: {str(e)}")
-        import traceback
-        traceback.print_exc()
+    # Setup
+    if not system.setup():
+        print("✗ Setup failed")
         return 1
     
-    finally:
-        system.shutdown()
+    # Set goal
+    start = (10, 10)
+    goal = (90, 90)
+    system.set_navigation_goal(start, goal)
+    
+    # Run navigation
+    system.run()
+    
+    return 0
 
 
 if __name__ == "__main__":
