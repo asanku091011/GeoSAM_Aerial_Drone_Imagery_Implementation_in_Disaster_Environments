@@ -53,10 +53,10 @@ def send_commands_gradually():
     print()
     
     # Confirm
-    response = input("Proceed? (y/n): ").strip().lower()
-    if response != 'y':
-        print("Cancelled")
-        return False
+#    response = input("Proceed? (y/n): ").strip().lower()
+#    if response != 'y':
+#        print("Cancelled")
+#        return False
     
     # Create temp directory for intermediate files
     temp_dir = tempfile.mkdtemp()

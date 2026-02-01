@@ -25,6 +25,7 @@ from rrt_star import RRTStarPlanner
 from greedy import GreedyPlanner
 from path_converter import PathConverter
 from data_logger import DataLogger
+from send_to_robot_simple import send_commands_gradually
 
 
 class DisasterNavigationSystem:
@@ -336,6 +337,8 @@ class DisasterNavigationSystem:
         print("\nCleaning up...")
         self.image_input.disconnect()
         cv2.destroyAllWindows()
+        
+        send_commands_gradually()
         
         print("\n✓ System shutdown complete")
 
