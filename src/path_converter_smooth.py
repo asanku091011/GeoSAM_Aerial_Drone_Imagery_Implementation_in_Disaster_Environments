@@ -29,7 +29,7 @@ class SmoothPathConverter:
         
         print(f"Smooth Path Converter initialized (360° angles)")
     
-    def convert_path_to_commands(self, path, start_heading=0):
+    def convert_path_to_commands(self, path, start_heading=0, max_move_distance=7):
         """
         Convert smoothed path to robot commands with continuous angles.
         Uses IMAGE coordinate system where:
@@ -38,12 +38,16 @@ class SmoothPathConverter:
         - 180° = West (left)
         - 270° = North (up)
         
+        OPTIMIZATION: Splits long movements into chunks of max_move_distance
+        to allow more frequent path reevaluation.
+        
         Args:
             path (list): Path as list of (x, y) tuples
             start_heading (float): Initial robot heading in degrees (0-359)
+            max_move_distance (int): Maximum distance per move command (default: 7)
             
         Returns:
-            list: Command strings like "turn(37.5)" and "move(15.3)"
+            list: Command strings like "turn(37.5)" and "move(7)"
         """
         if not path or len(path) < 2:
             print("⚠ Path too short to convert")
@@ -83,10 +87,16 @@ class SmoothPathConverter:
             distance = np.sqrt(dx*dx + dy*dy)
             scaled_distance = distance * self.unit_scale
             
+            # OPTIMIZATION: Split long movements into chunks
             if scaled_distance > 0.1:
-                commands.append(f"move({scaled_distance:.1f})")
+                # Split into chunks of max_move_distance
+                remaining = scaled_distance
+                while remaining > 0.1:
+                    chunk = min(remaining, max_move_distance)
+                    commands.append(f"move({chunk:.1f})")
+                    remaining -= chunk
         
-        print(f"✓ Converted to {len(commands)} smooth commands")
+        print(f"✓ Converted to {len(commands)} commands (max {max_move_distance} per move)")
         return commands
     
     def optimize_commands(self, commands):

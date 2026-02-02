@@ -67,19 +67,19 @@ class DynamicSceneGenerator:
             (0, 'add_obstacle', {'pos': (600, 300), 'size': (75, 110)}),
             
             # New obstacle appears at iteration 5
-            (5, 'add_obstacle', {'pos': (350, 350), 'size': (100, 100), 'label': 'NEW!'}),
+            (2, 'add_obstacle', {'pos': (350, 350), 'size': (100, 100), 'label': 'NEW!'}),
             
             # Clear a path at iteration 10
-            (10, 'remove_obstacle', {'index': 1}),
+            (4, 'remove_obstacle', {'index': 1}),
             
             # Add another obstacle at iteration 15
-            (15, 'add_obstacle', {'pos': (500, 250), 'size': (85, 95), 'label': 'DEBRIS'}),
+            (6, 'add_obstacle', {'pos': (500, 250), 'size': (85, 95), 'label': 'DEBRIS'}),
             
             # Move an obstacle at iteration 20
-            (20, 'move_obstacle', {'index': 0, 'new_pos': (320, 220)}),
+            (8, 'move_obstacle', {'index': 0, 'new_pos': (320, 220)}),
             
             # More obstacles appear at iteration 25
-            (25, 'add_obstacle', {'pos': (700, 500), 'size': (70, 80)}),
+            (10, 'add_obstacle', {'pos': (700, 500), 'size': (70, 80)}),
         ]
         
         return events

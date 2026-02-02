@@ -384,9 +384,8 @@ if __name__ == "__main__":
     
     # Create complex obstacles
     grid = np.ones((50, 50), dtype=np.uint8)
-    grid[10:40, 20:22] = 0  # Vertical wall
-    grid[10:12, 20:35] = 0  # L-shape obstacle
-    grid[25:27, 5:25] = 0
+    grid[15:35, 20:22] = 0  # Vertical wall with gap
+    grid[15:17, 20:40] = 0  # Horizontal wall
     
     map_builder.update_from_segmentation(grid)
     
