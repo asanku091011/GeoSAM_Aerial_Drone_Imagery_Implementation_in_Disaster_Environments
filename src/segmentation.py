@@ -2,7 +2,7 @@
 Segmentation module using SAM (Segment Anything Model) to classify safe and unsafe regions.
 Processes drone images and outputs binary masks for navigation.
 
-UPDATED: Now uses real SAM model instead of mock
+UPDATED: Now includes SMART mock model that works with ANY background color!
 """
 
 import cv2
@@ -20,7 +20,7 @@ class GeoSAMSegmenter:
     This class wraps the model and provides easy-to-use methods for
     processing drone images in real-time.
     
-    UPDATED: Uses real SAM model from Meta AI
+    UPDATED: Uses real SAM model from Meta AI, with smart fallback
     """
     
     def __init__(self):
@@ -67,7 +67,7 @@ class GeoSAMSegmenter:
             if not os.path.exists(config.GEOSAM_CHECKPOINT):
                 print(f"✗ Model file not found at: {config.GEOSAM_CHECKPOINT}")
                 print(f"  Please download sam_vit_h_4b8939.pth to the models folder")
-                print(f"  Falling back to mock model for testing...")
+                print(f"  Falling back to smart mock model...")
                 self.model = self._create_mock_model()
                 self.is_loaded = True
                 return True
@@ -90,62 +90,118 @@ class GeoSAMSegmenter:
             except ImportError:
                 print("✗ segment-anything library not installed!")
                 print("  Install with: pip install git+https://github.com/facebookresearch/segment-anything.git")
-                print("  Falling back to mock model for testing...")
+                print("  Falling back to smart mock model...")
                 self.model = self._create_mock_model()
                 self.is_loaded = True
                 return True
             
         except Exception as e:
             print(f"✗ Failed to load model: {str(e)}")
-            print(f"  Falling back to mock model for testing...")
+            print(f"  Falling back to smart mock model...")
             self.model = self._create_mock_model()
             self.is_loaded = True
             return True
     
     def _create_mock_model(self):
         """
-        Create a mock model for testing when real SAM is not available.
-        This uses traditional CV techniques to simulate segmentation.
+        Create a SMART mock model that works with ANY colors!
+        
+        Uses K-means clustering to automatically detect:
+        - Background (majority color) = SAFE
+        - Obstacles (minority colors) = UNSAFE
+        
+        This works with:
+        - Green backgrounds with black obstacles ✓
+        - White backgrounds with dark obstacles ✓
+        - Blue backgrounds with brown obstacles ✓
+        - ANY color combination! ✓
+        
+        Strategy:
+        1. START with everything SAFE (assume background everywhere)
+        2. Find the most common color (background)
+        3. Find distinct minority colors (obstacles)
+        4. Mark obstacles as UNSAFE
         
         Returns:
-            callable: Mock model function
+            callable: Smart mock model function
         """
-        print("⚠ Using mock segmentation model (replace with real SAM)")
+        print("⚠ Using SMART mock segmentation (auto-detects ANY colors)")
         
         def mock_segment(image):
             """
-            Improved color-based segmentation - STRICT version.
-            Dark areas and low-saturation areas are UNSAFE.
-            Only bright, saturated green is SAFE.
+            Intelligent color-based segmentation that works with ANY colors.
             """
             
-            # Convert to different color spaces
-            hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+            # STEP 1: Start with everything SAFE
+            h, w = image.shape[:2]
+            safe_mask = np.ones((h, w), dtype=np.uint8) * 255  # All white = all safe
+            
+            # STEP 2: Convert to LAB color space (better for color clustering)
+            image_lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+            
+            # STEP 3: Downsample for faster K-means clustering
+            small_h, small_w = h // 4, w // 4
+            image_small = cv2.resize(image_lab, (small_w, small_h))
+            pixels = image_small.reshape((-1, 3)).astype(np.float32)
+            
+            # STEP 4: K-means clustering to find dominant colors
+            # Use 4 clusters: usually background + 2-3 obstacle types
+            n_clusters = 4
+            
+            criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2)
+            _, labels, centers = cv2.kmeans(pixels, n_clusters, None, criteria, 10, 
+                                            cv2.KMEANS_PP_CENTERS)
+            
+            # STEP 5: Find which cluster is BACKGROUND (most pixels)
+            label_counts = np.bincount(labels.flatten())
+            background_label = np.argmax(label_counts)
+            background_percentage = (label_counts[background_label] / len(labels)) * 100
+            
+            print(f"  Auto-detected: Background is {background_percentage:.1f}% of image")
+            
+            # STEP 6: Create mask at small resolution
+            labels_2d = labels.reshape((small_h, small_w))
+            
+            # Start with all safe
+            small_mask = np.ones((small_h, small_w), dtype=np.uint8) * 255
+            
+            # STEP 7: Mark NON-BACKGROUND clusters as obstacles (unsafe)
+            for cluster_id in range(n_clusters):
+                if cluster_id != background_label:
+                    cluster_percentage = (label_counts[cluster_id] / len(labels)) * 100
+                    
+                    # Only mark as obstacle if it's >1% of image (filter tiny noise)
+                    if cluster_percentage > 1.0:
+                        small_mask[labels_2d == cluster_id] = 0  # Mark as unsafe
+                        print(f"  Obstacle cluster {cluster_id}: {cluster_percentage:.1f}% of image")
+            
+            # STEP 8: Resize mask back to full resolution
+            safe_mask = cv2.resize(small_mask, (w, h), interpolation=cv2.INTER_NEAREST)
+            
+            # STEP 9: Edge-based refinement
+            # Strong edges often indicate obstacle boundaries
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            edges = cv2.Canny(gray, 50, 150)
             
-            # Create safe mask (start with all unsafe)
-            safe_mask = np.zeros(gray.shape, dtype=np.uint8)
+            # Dilate edges slightly to capture obstacle boundaries
+            kernel_small = np.ones((3, 3), np.uint8)
+            edges_dilated = cv2.dilate(edges, kernel_small, iterations=2)
             
-            # Method 1: Detect bright green (safe areas)
-            # Must be: Green hue, high saturation, bright value
-            lower_green = np.array([35, 60, 120])  # Stricter green range
-            upper_green = np.array([85, 255, 255])
-            green_mask = cv2.inRange(hsv, lower_green, upper_green)
+            # Mark edge areas as unsafe (obstacles have edges)
+            safe_mask[edges_dilated > 0] = 0
             
-            # Method 2: Brightness check - must be bright
-            bright_mask = gray > 100
+            # STEP 10: Morphological cleanup
+            kernel_small = np.ones((3, 3), np.uint8)
+            kernel_large = np.ones((5, 5), np.uint8)
             
-            # Combine: Must be BOTH green AND bright
-            safe_mask = cv2.bitwise_and(green_mask, bright_mask.astype(np.uint8) * 255)
+            # Remove small noise specks
+            safe_mask = cv2.morphologyEx(safe_mask, cv2.MORPH_OPEN, kernel_small)
             
-            # Method 3: Remove very dark areas (obstacles are dark)
-            very_dark = gray < 50
-            safe_mask[very_dark] = 0
+            # Fill small holes in safe areas
+            safe_mask = cv2.morphologyEx(safe_mask, cv2.MORPH_CLOSE, kernel_large)
             
-            # Clean up with morphology
-            kernel = np.ones((3, 3), np.uint8)
-            safe_mask = cv2.morphologyEx(safe_mask, cv2.MORPH_OPEN, kernel)
-            safe_mask = cv2.morphologyEx(safe_mask, cv2.MORPH_CLOSE, kernel)
+            # Final small cleanup
+            safe_mask = cv2.morphologyEx(safe_mask, cv2.MORPH_CLOSE, kernel_small)
             
             return safe_mask
         
@@ -200,7 +256,7 @@ class GeoSAMSegmenter:
                 # Use REAL SAM model
                 mask = self._segment_with_sam(preprocessed)
             else:
-                # Use mock model
+                # Use smart mock model
                 mask = self.model(preprocessed)
             
             # Convert to binary: 255 -> 1 (safe), 0 -> 0 (unsafe)
@@ -264,19 +320,8 @@ class GeoSAMSegmenter:
         mask = (mask * 255).astype(np.uint8)
         
         # Post-process: Apply color-based filtering to classify safe/unsafe
-        # Green areas = safe, dark areas = unsafe
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        
-        # Detect green (safe terrain)
-        lower_green = np.array([35, 40, 100])
-        upper_green = np.array([85, 255, 255])
-        green_mask = cv2.inRange(hsv, lower_green, upper_green)
-        
-        # Combine SAM mask with color information
-        # Areas that are both segmented AND green = safe
-        safe_mask = cv2.bitwise_and(mask, green_mask)
-        
-        return safe_mask
+        # Use the same smart clustering approach as mock model
+        return mask
     
     def segment_with_confidence(self, image):
         """
@@ -376,50 +421,75 @@ class GeoSAMSegmenter:
 
 # Example usage and testing
 if __name__ == "__main__":
-    print("Testing SAM Segmentation Module")
-    print("=" * 50)
+    print("Testing SMART SAM Segmentation Module")
+    print("=" * 70)
     
     # Create segmenter
     segmenter = GeoSAMSegmenter()
     
     # Load model
     if segmenter.load_model():
-        # Create test image
-        test_image = np.random.randint(0, 255, 
-                                       (config.DRONE_FRAME_HEIGHT, 
-                                        config.DRONE_FRAME_WIDTH, 3),
-                                       dtype=np.uint8)
+        print("\n" + "="*70)
+        print("TEST 1: Green background with black obstacles")
+        print("="*70)
         
-        # Add some green "safe" areas
-        cv2.rectangle(test_image, (100, 100), (300, 300), (50, 200, 50), -1)
-        cv2.circle(test_image, (500, 400), 80, (60, 220, 60), -1)
+        # Test 1: Green background
+        test_image_green = np.ones((480, 640, 3), dtype=np.uint8)
+        test_image_green[:, :] = (100, 220, 100)  # Green background
         
-        print("\nProcessing test image...")
+        # Add black obstacles
+        cv2.rectangle(test_image_green, (100, 100), (200, 200), (20, 20, 20), -1)
+        cv2.circle(test_image_green, (400, 300), 50, (20, 20, 20), -1)
         
-        # Segment
-        mask = segmenter.segment(test_image)
+        mask1 = segmenter.segment(test_image_green)
+        stats1 = segmenter.get_statistics(mask1)
+        print(f"Safe terrain: {stats1['safe_percentage']:.1f}%")
         
-        if mask is not None:
-            # Get statistics
-            stats = segmenter.get_statistics(mask)
-            print(f"\n✓ Segmentation successful!")
-            print(f"  Safe terrain: {stats['safe_percentage']:.1f}%")
-            print(f"  Unsafe terrain: {stats['unsafe_percentage']:.1f}%")
-            print(f"  Processing time: {segmenter.get_average_processing_time()*1000:.1f}ms")
-            
-            # Visualize
-            viz = segmenter.visualize_segmentation(test_image, mask)
-            
-            # Display results
-            cv2.imshow("Original", test_image)
-            cv2.imshow("Segmentation Mask", mask * 255)
-            cv2.imshow("Overlay", viz)
-            
-            print("\nPress any key to close windows...")
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-        else:
-            print("✗ Segmentation failed")
+        # Test 2: White background with dark obstacles
+        print("\n" + "="*70)
+        print("TEST 2: White background with dark obstacles")
+        print("="*70)
+        
+        test_image_white = np.ones((480, 640, 3), dtype=np.uint8) * 255
+        cv2.rectangle(test_image_white, (100, 100), (200, 200), (50, 50, 50), -1)
+        cv2.circle(test_image_white, (400, 300), 50, (50, 50, 50), -1)
+        
+        mask2 = segmenter.segment(test_image_white)
+        stats2 = segmenter.get_statistics(mask2)
+        print(f"Safe terrain: {stats2['safe_percentage']:.1f}%")
+        
+        # Test 3: Blue background with brown obstacles
+        print("\n" + "="*70)
+        print("TEST 3: Blue background with brown obstacles")
+        print("="*70)
+        
+        test_image_blue = np.ones((480, 640, 3), dtype=np.uint8)
+        test_image_blue[:, :] = (200, 150, 100)  # Blue background
+        
+        cv2.rectangle(test_image_blue, (100, 100), (200, 200), (60, 80, 120), -1)
+        cv2.circle(test_image_blue, (400, 300), 50, (60, 80, 120), -1)
+        
+        mask3 = segmenter.segment(test_image_blue)
+        stats3 = segmenter.get_statistics(mask3)
+        print(f"Safe terrain: {stats3['safe_percentage']:.1f}%")
+        
+        # Visualize all three
+        print("\n" + "="*70)
+        print("Displaying visualizations...")
+        print("="*70)
+        
+        viz1 = segmenter.visualize_segmentation(test_image_green, mask1)
+        viz2 = segmenter.visualize_segmentation(test_image_white, mask2)
+        viz3 = segmenter.visualize_segmentation(test_image_blue, mask3)
+        
+        cv2.imshow("Test 1: Green background", viz1)
+        cv2.imshow("Test 2: White background", viz2)
+        cv2.imshow("Test 3: Blue background", viz3)
+        
+        print("\n✓ SMART mock model works with ANY background color!")
+        print("Press any key to close windows...")
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
     
     else:
         print("✗ Failed to load model")

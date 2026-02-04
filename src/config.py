@@ -51,7 +51,7 @@ MAP_UPDATE_THRESHOLD = 0.15  # 15% change triggers replanning
 # =====================================================
 # Available planning algorithms
 PLANNING_ALGORITHMS = ['astar', 'rrt_star', 'greedy']
-DEFAULT_ALGORITHM = 'astar'
+DEFAULT_ALGORITHM = 'rrt_star'
 
 # A* configuration
 ASTAR_DIAGONAL_ALLOWED = True

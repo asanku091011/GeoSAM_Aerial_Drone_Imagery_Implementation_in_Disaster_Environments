@@ -50,7 +50,7 @@ class DynamicNavigationSystem:
         print("\nInitializing components...\n")
         
         # DYNAMIC IMAGE INPUT
-        self.image_input = DynamicImageInput("data/test_images/current_scene.jpg")
+        self.image_input = DynamicImageInput("data/test_images/ladi_00297_segmented.jpg")
         
         # Segmentation
         self.segmenter = GeoSAMSegmenter()
@@ -119,13 +119,13 @@ class DynamicNavigationSystem:
         """Check if Raspberry Pi robot is reachable."""
         try:
             result = subprocess.run(
-                ['ping', '-n', '1', '-w', '1000', '192.168.1.10'],
+                ['ping', '-n', '1', '-w', '1000', '10.42.0.1'],
                 capture_output=True,
                 timeout=2
             )
             
             if result.returncode == 0:
-                print("  ✓ Robot Pi reachable at 192.168.1.10")
+                print("  ✓ Robot Pi reachable at 10.42.0.1")
                 print("  ✓ Commands will be sent via SCP")
                 self.robot_connected = True
             else:
@@ -147,6 +147,25 @@ class DynamicNavigationSystem:
         print(f"Navigation goal set:")
         print(f"  Start: {start_grid}")
         print(f"  Goal: {goal_grid}")
+        # Check if start and goal are free
+        start=start_grid
+        startx=start_grid[0]
+        starty=start_grid[1]
+        goal=goal_grid
+        goalx=goal_grid[0]
+        goaly=goal_grid[1]
+        while not (self.map_builder.is_cell_free(start[0],start[1])):
+            print(f"Start is NOT free, shifting goal to {(startx+2,starty+2)}")
+            startx+=2
+            starty+=2
+            start = (startx, starty)
+        print(f"Start is free: {self.map_builder.is_cell_free(start[0], start[1])}")   
+        while not (self.map_builder.is_cell_free(goal[0],goal[1])):
+            print(f"Goal is NOT free, shifting goal to {(goalx-2,goaly-2)}")
+            goalx-=2
+            goaly-=2
+            goal = (goalx, goaly)
+        print(f"Goal is free: {self.map_builder.is_cell_free(goal[0], goal[1])}")
     
     def run(self):
         """Main navigation loop."""
@@ -345,7 +364,7 @@ class DynamicNavigationSystem:
                 temp_path = temp_file.name
             
             # SCP to Pi
-            remote_path = "asanku@172.20.10.14:/home/asanku/Documents/RSEF/movements/robot_path.txt"
+            remote_path = "asanku@10.42.0.1:/home/asanku/Documents/RSEF/movements/robot_path.txt"
             
             result = subprocess.run(
                 ['scp', temp_path, remote_path],
@@ -546,8 +565,6 @@ def main():
     if not system.setup():
         print("✗ Setup failed")
         return 1
-    
-    # Set goal
     start = (10, 10)
     goal = (90, 90)
     system.set_navigation_goal(start, goal)

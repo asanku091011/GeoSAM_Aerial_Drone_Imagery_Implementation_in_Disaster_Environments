@@ -65,6 +65,18 @@ class DynamicSceneGenerator:
             (0, 'add_obstacle', {'pos': (300, 200), 'size': (80, 100)}),
             (0, 'add_obstacle', {'pos': (450, 400), 'size': (90, 90)}),
             (0, 'add_obstacle', {'pos': (600, 300), 'size': (75, 110)}),
+            (0, 'add_obstacle', {'pos': (450, 200), 'size': (40, 40)}),
+            (0, 'add_obstacle', {'pos': (500, 200), 'size': (40, 40)}),
+            (0, 'add_obstacle', {'pos': (550, 200), 'size': (40, 40)}),
+            (0, 'add_obstacle', {'pos': (600, 200), 'size': (40, 40)}),
+            (0, 'add_obstacle', {'pos': (650, 200), 'size': (40, 40)}),
+            (0, 'add_obstacle', {'pos': (280, 320), 'size': (40, 40)}),
+            (0, 'add_obstacle', {'pos': (280, 380), 'size': (40, 40)}),
+            (0, 'add_obstacle', {'pos': (280, 440), 'size': (40, 40)}),
+            (0, 'add_obstacle', {'pos': (280, 500), 'size': (40, 40)}),
+            (0, 'add_obstacle', {'pos': (280, 560), 'size': (40, 40)}),
+            
+
             
             # New obstacle appears at iteration 5
             (5, 'add_obstacle', {'pos': (350, 350), 'size': (100, 100), 'label': 'NEW!'}),
@@ -97,7 +109,7 @@ class DynamicSceneGenerator:
         
         # Create base image (bright green = safe terrain)
         image = np.ones((self.height, self.width, 3), dtype=np.uint8)
-        image[:, :] = (80, 255, 80)  # Bright green
+        image[:, :] = (255, 255, 255)  # Bright green
         
         # Draw obstacles (very dark with red borders)
         for i, obs in enumerate(self.obstacles):
@@ -116,14 +128,14 @@ class DynamicSceneGenerator:
                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
         
         # Mark start position (subtle)
-        cv2.circle(image, self.start_pos, 40, (50, 255, 50), -1)
-        cv2.putText(image, "S", (self.start_pos[0] - 10, self.start_pos[1] + 5),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 150), 1)
+        cv2.circle(image, self.start_pos, 40, (255, 255, 255), -1)
+        #cv2.putText(image, "S", (self.start_pos[0] - 10, self.start_pos[1] + 5),
+                   #cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 150), 1)
         
         # Mark goal position (subtle)
-        cv2.circle(image, self.goal_pos, 40, (50, 255, 50), -1)
-        cv2.putText(image, "G", (self.goal_pos[0] - 10, self.goal_pos[1] + 5),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 150), 1)
+        cv2.circle(image, self.goal_pos, 40, (255, 255, 255), -1)
+        #cv2.putText(image, "G", (self.goal_pos[0] - 10, self.goal_pos[1] + 5),
+                   #cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 150), 1)
         
         # Add iteration counter
         cv2.putText(image, f"Iteration {self.iteration}", (10, 30),
