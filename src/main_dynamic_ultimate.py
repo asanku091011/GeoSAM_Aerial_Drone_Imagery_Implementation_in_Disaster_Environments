@@ -20,8 +20,9 @@ import config
 # Import all system components
 from dynamic_image_input import DynamicImageInput  # ← DYNAMIC IMAGES!
 from segmentation import GeoSAMSegmenter
+from proper_sam_segmenter import AccurateSAMSegmenter
 from map_builder import MapBuilder
-from astar_smooth import AStarSmoothPlanner  # ← SMOOTH 360° PATHS!
+from astar import AStarPlanner  # ← SMOOTH 360° PATHS!
 from rrt_star import RRTStarPlanner
 from greedy import GreedyPlanner
 from path_converter_smooth import SmoothPathConverter  # ← SMOOTH CONVERTER!
@@ -50,10 +51,11 @@ class DynamicNavigationSystem:
         print("\nInitializing components...\n")
         
         # DYNAMIC IMAGE INPUT
-        self.image_input = DynamicImageInput("data/test_images/ladi_00297_segmented.jpg")
+        self.image_input = DynamicImageInput("data/test_images/current_scene.jpg")
         
         # Segmentation
-        self.segmenter = GeoSAMSegmenter()
+        #old one -> self.segmenter = GeoSAMSegmenter()
+        self.segmenter = AccurateSAMSegmenter()
         
         # Map builder
         self.map_builder = MapBuilder()
@@ -67,7 +69,7 @@ class DynamicNavigationSystem:
         
         # Create planners - SMOOTH A*!
         self.planners = {
-            'astar': AStarSmoothPlanner(self.map_builder),  # ← SMOOTH!
+            'astar': AStarPlanner(self.map_builder),  # ← SMOOTH!
             'rrt_star': RRTStarPlanner(self.map_builder),
             'greedy': GreedyPlanner(self.map_builder)
         }
@@ -147,26 +149,63 @@ class DynamicNavigationSystem:
         print(f"Navigation goal set:")
         print(f"  Start: {start_grid}")
         print(f"  Goal: {goal_grid}")
+        print(f"  (Will be validated after first segmentation)")
         # Check if start and goal are free
-        start=start_grid
-        startx=start_grid[0]
-        starty=start_grid[1]
-        goal=goal_grid
-        goalx=goal_grid[0]
-        goaly=goal_grid[1]
-        while not (self.map_builder.is_cell_free(start[0],start[1])):
-            print(f"Start is NOT free, shifting goal to {(startx+2,starty+2)}")
-            startx+=2
-            starty+=2
-            start = (startx, starty)
-        print(f"Start is free: {self.map_builder.is_cell_free(start[0], start[1])}")   
-        while not (self.map_builder.is_cell_free(goal[0],goal[1])):
-            print(f"Goal is NOT free, shifting goal to {(goalx-2,goaly-2)}")
-            goalx-=2
-            goaly-=2
-            goal = (goalx, goaly)
-        print(f"Goal is free: {self.map_builder.is_cell_free(goal[0], goal[1])}")
-    
+    def _validate_and_shift_positions(self):
+        """
+        Validate start and goal positions after segmentation.
+        Shift them if they're on obstacles.
+        """
+        print("\n[Validating start/goal positions after segmentation]")
+        
+        # Shift start if needed
+        startx, starty = self.current_position_grid
+        original_start = self.current_position_grid
+        
+        while not self.map_builder.is_cell_free(startx, starty):
+            print(f"  ⚠ Start {(startx, starty)} is on obstacle, shifting to {(startx+2, starty+2)}")
+            startx += 2
+            starty += 2
+            
+            # Safety check - don't go off the map
+            if startx >= self.map_builder.width or starty >= self.map_builder.height:
+                print(f"  ✗ Cannot find free start position near {original_start}")
+                return False
+        
+        self.current_position_grid = (startx, starty)
+        
+        if (startx, starty) != original_start:
+            print(f"  ✓ Start shifted: {original_start} → {(startx, starty)}")
+        else:
+            print(f"  ✓ Start is free: {(startx, starty)}")
+        
+        # Shift goal if needed
+        goalx, goaly = self.goal_position
+        original_goal = self.goal_position
+        
+        while not self.map_builder.is_cell_free(goalx, goaly):
+            print(f"  ⚠ Goal {(goalx, goaly)} is on obstacle, shifting to {(goalx-2, goaly-2)}")
+            goalx -= 2
+            goaly -= 2
+            
+            # Safety check - don't go off the map or past start
+            if goalx <= startx or goaly <= starty or goalx < 0 or goaly < 0:
+                print(f"  ✗ Cannot find free goal position near {original_goal}")
+                return False
+        
+        self.goal_position = (goalx, goaly)
+        
+        if (goalx, goaly) != original_goal:
+            print(f"  ✓ Goal shifted: {original_goal} → {(goalx, goaly)}")
+        else:
+            print(f"  ✓ Goal is free: {(goalx, goaly)}")
+        
+        print(f"\nFinal validated positions:")
+        print(f"  Start: {self.current_position_grid}")
+        print(f"  Goal: {self.goal_position}")
+        
+        return True
+
     def run(self):
         """Main navigation loop."""
         print("\n" + "="*70)
@@ -176,13 +215,21 @@ class DynamicNavigationSystem:
         print("  SPACE - Pause/Resume")
         print("  Q - Quit")
         print("  R - Force replan")
+        print("\nSettings:")
+        print(f"  Static image mode: {config.STATIC_IMAGE_MODE}")
         print("\nOptimizations:")
-        print("  ✓ Movements split into max 7-unit chunks")
-        print("  ✓ Replanning only after moves (not after turns)")
+        if config.STATIC_IMAGE_MODE:
+            print("  ✓ Static image - segment once, reuse mask")
+            print("  ✓ Replanning only after moves (not after turns)")
+        else:
+            print("  ✓ Dynamic images - resegment as needed")
+            print("  ✓ Replanning only after moves (not after turns)")
         print("="*70)
         
         paused = False
-        last_command_was_turn = False  # Track if we just turned
+        last_command_was_turn = False
+        positions_validated = False
+        static_segmentation_done = False  # Track if we've done initial segmentation for static mode
         
         try:
             while True:
@@ -199,7 +246,9 @@ class DynamicNavigationSystem:
                     continue
                 elif key == ord('r'):
                     print("\n🔄 Force replan requested")
-                    last_command_was_turn = False  # Force replan
+                    last_command_was_turn = False
+                    if config.STATIC_IMAGE_MODE:
+                        static_segmentation_done = False  # Allow resegmentation in static mode
                 
                 if paused:
                     time.sleep(0.1)
@@ -212,6 +261,59 @@ class DynamicNavigationSystem:
                 print(f"Current position: {self.current_position_grid}")
                 print(f"Current heading: {self.current_heading:.1f}°")
                 print(f"Goal position: {self.goal_position}")
+                
+                # Determine if we need to capture/segment
+                need_segmentation = False
+                
+                if config.STATIC_IMAGE_MODE:
+                    # Static mode: only segment once at the beginning
+                    if not static_segmentation_done:
+                        need_segmentation = True
+                        print("\n📷 First segmentation for static image...")
+                    else:
+                        print("\n♻️ Reusing static segmentation mask...")
+                else:
+                    # Dynamic mode: skip resegmentation only after turns
+                    if last_command_was_turn:
+                        print("\n⏭ Skipping capture/replan (just turned, same position)")
+                    else:
+                        need_segmentation = True
+                
+                if need_segmentation:
+                    # STEP 1: Capture and segment
+                    if not self._capture_and_segment():
+                        continue
+                    
+                    if config.STATIC_IMAGE_MODE:
+                        static_segmentation_done = True
+                    
+                    # VALIDATE POSITIONS AFTER FIRST SEGMENTATION
+                    if not positions_validated:
+                        if not self._validate_and_shift_positions():
+                            print("✗ Could not find valid start/goal positions")
+                            break
+                        positions_validated = True
+                    
+                    # STEP 2: Plan smooth 360° path
+                    path = self._plan_path()
+                    if not path:
+                        print("⚠ Planning failed")
+                        break
+                    
+                    # Store path for next iteration
+                    self.current_path = path
+                else:
+                    # Reuse existing path (or replan if just turned in dynamic mode)
+                    if last_command_was_turn:
+                        # Just reuse the path
+                        path = self.current_path
+                    else:
+                        # Position changed, replan with existing mask
+                        path = self._plan_path()
+                        if not path:
+                            print("⚠ Planning failed")
+                            break
+                        self.current_path = path
                 
                 # Calculate distance to goal
                 if self.current_position_grid and self.goal_position:
@@ -227,28 +329,7 @@ class DynamicNavigationSystem:
                         print("="*70)
                         break
                 
-                # OPTIMIZATION: Only replan after moves, not after turns
-                # (Turning doesn't change position, so no need to rescan environment)
-                if last_command_was_turn:
-                    print("\n⏭ Skipping capture/replan (just turned, same position)")
-                    # Don't capture new image or replan
-                    # Just get the existing path and continue
-                    path = self.current_path
-                else:
-                    # STEP 1: Capture and segment (with dynamic reload!)
-                    if not self._capture_and_segment():
-                        continue
-                    
-                    # STEP 2: Plan smooth 360° path
-                    path = self._plan_path()
-                    if not path:
-                        print("⚠ Planning failed")
-                        break
-                    
-                    # Store path for next iteration
-                    self.current_path = path
-                
-                # STEP 3: Convert to smooth commands (split into max 7-unit moves)
+                # STEP 3: Convert to smooth commands
                 commands = self._convert_path(path)
                 if not commands:
                     print("⚠ No commands generated")
@@ -260,12 +341,14 @@ class DynamicNavigationSystem:
                 
                 # Track what type of command we just sent
                 last_command_was_turn = commands[0].startswith('turn(')
-                if last_command_was_turn:
+                if config.STATIC_IMAGE_MODE:
+                    print(f"  → Using static mask (no resegmentation)")
+                elif last_command_was_turn:
                     print(f"  → Next iteration will skip replan (just turned)")
                 else:
                     print(f"  → Next iteration will replan (moved to new position)")
                 
-                # STEP 5: Update robot state with FIXED coordinates
+                # STEP 5: Update robot state
                 self._update_robot_state(commands[0], path)
                 
                 # STEP 6: Visualize
@@ -378,6 +461,7 @@ class DynamicNavigationSystem:
             if result.returncode == 0:
                 print(f"✓ Sent to Pi: {first_cmd}")
                 self.commands_sent.append(first_cmd)
+                time.sleep(1)
                 return True
             else:
                 print(f"  ⚠ SCP failed (return code {result.returncode})")
@@ -452,7 +536,7 @@ class DynamicNavigationSystem:
         if hasattr(self, 'current_image'):
             img_vis = cv2.resize(self.current_image, (self.vis_width, self.vis_height))
             cv2.putText(img_vis, f"Iteration {self.iteration}", (10, 30),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
             cv2.imshow("1. Current Image", img_vis)
         
         # Window 2: Segmentation
@@ -463,14 +547,18 @@ class DynamicNavigationSystem:
             seg_vis = cv2.resize(seg_vis, (self.vis_width, self.vis_height))
             cv2.imshow("2. Segmentation", seg_vis)
         
-        # Window 3: Navigation map
+        # Window 3: Navigation map (FIXED - resize to match other windows!)
         map_vis = self.map_builder.visualize(
             path=path,
             start=self.current_position_grid,
             goal=self.goal_position
         )
+        # Resize to match other windows
+        map_vis = cv2.resize(map_vis, (self.vis_width, self.vis_height), 
+                            interpolation=cv2.INTER_NEAREST)
+        
         cv2.putText(map_vis, f"Heading: {self.current_heading:.1f}°", (10, 30),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
         cv2.imshow("3. Navigation Map", map_vis)
         
         # Window 4: Progress tracker
@@ -479,7 +567,7 @@ class DynamicNavigationSystem:
         
         y_pos = 40
         cv2.putText(tracker, f"ITERATION: {self.iteration}", (20, y_pos),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
+                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
         
         y_pos += 35
         # Show robot connection status
@@ -490,15 +578,15 @@ class DynamicNavigationSystem:
             status_text = "Robot: SIMULATION"
             status_color = (100, 100, 255)
         cv2.putText(tracker, status_text, (20, y_pos),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, status_color, 2)
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, status_color, 2)
         
         y_pos += 35
         cv2.putText(tracker, f"Position: {self.current_position_grid}", (20, y_pos),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
         
         y_pos += 30
         cv2.putText(tracker, f"Heading: {self.current_heading:.1f}°", (20, y_pos),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
         
         y_pos += 30
         if self.current_position_grid and self.goal_position:
@@ -506,7 +594,7 @@ class DynamicNavigationSystem:
             dy = self.goal_position[1] - self.current_position_grid[1]
             dist = np.sqrt(dx**2 + dy**2)
             cv2.putText(tracker, f"Distance to goal: {dist:.1f}", (20, y_pos),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 1)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 1)
             
             # Progress bar
             y_pos += 50
@@ -521,21 +609,21 @@ class DynamicNavigationSystem:
             cv2.rectangle(tracker, (20, y_pos), (20 + bar_width, y_pos + 30), (0, 255, 0), -1)
             
             cv2.putText(tracker, f"{progress*100:.0f}%", (270, y_pos + 22),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
         
         y_pos += 60
         cv2.putText(tracker, f"Commands sent: {len(self.commands_sent)}", (20, y_pos),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
         
         # Recent commands
         y_pos += 40
         cv2.putText(tracker, "Recent commands:", (20, y_pos),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150, 150, 150), 1)
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150, 150, 150), 1)
         
         for i, cmd in enumerate(self.commands_sent[-5:]):
             y_pos += 25
             cv2.putText(tracker, f"  {cmd}", (30, y_pos),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.4, (180, 180, 180), 1)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (180, 180, 180), 1)
         
         cv2.imshow("4. Progress Tracker", tracker)
     
@@ -565,8 +653,8 @@ def main():
     if not system.setup():
         print("✗ Setup failed")
         return 1
-    start = (10, 10)
-    goal = (90, 90)
+    start = (75, 75)
+    goal = (config.MAP_WIDTH-75, config.MAP_HEIGHT-75)
     system.set_navigation_goal(start, goal)
     
     # Run navigation

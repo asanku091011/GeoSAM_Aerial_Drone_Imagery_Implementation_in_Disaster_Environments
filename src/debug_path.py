@@ -4,20 +4,23 @@ Debug path planning to see what path A* actually finds
 import cv2
 import numpy as np
 import os
+import config
 from segmentation import GeoSAMSegmenter
 from map_builder import MapBuilder
 from astar import AStarPlanner
 from rrt_star import RRTStarPlanner
+from proper_sam_segmenter import AccurateSAMSegmenter
 
 print("="*70)
 print("PATH PLANNING DEBUG")
 print("="*70)
 
 # Load image and segment
-image_path = os.path.join("..", "src", "data", "test_images", "ladi_07493_segmented.jpg")
+image_path = os.path.join("..", "src", "data", "test_images", "current_scene.jpg")
 image = cv2.imread(image_path)
 
-segmenter = GeoSAMSegmenter()
+#segmenter = GeoSAMSegmenter()
+segmenter = AccurateSAMSegmenter()
 segmenter.load_model()
 
 print("\nSegmenting image...")
@@ -29,8 +32,8 @@ map_builder = MapBuilder()
 map_builder.update_from_segmentation(mask)
 
 # Set start and goal
-startx,starty=10,10
-goalx,goaly=90,90
+startx,starty=75,75
+goalx,goaly=config.MAP_WIDTH-75,config.MAP_HEIGHT-75
 start = (startx, starty)
 goal = (goalx, goaly)
 
@@ -38,13 +41,13 @@ print(f"\nStart: {start}")
 print(f"Goal: {goal}")
 
 # Check if start and goal are free
-while not (map_builder.is_cell_free(start[0],start[1])):
+while not (map_builder.is_cell_free(start[0],start[1]) and startx<goalx):
     print(f"Start is NOT free, shifting goal to {(startx+2,starty+2)}")
     startx+=2
     starty+=2
     start = (startx, starty)
 print(f"Start is free: {map_builder.is_cell_free(start[0], start[1])}")   
-while not (map_builder.is_cell_free(goal[0],goal[1])):
+while not (map_builder.is_cell_free(goal[0],goal[1]) and goalx>startx):
     print(f"Goal is NOT free, shifting goal to {(goalx-2,goaly-2)}")
     goalx-=2
     goaly-=2
@@ -53,7 +56,7 @@ print(f"Goal is free: {map_builder.is_cell_free(goal[0], goal[1])}")
 
 # Plan path
 print("\nPlanning path with A*...")
-planner = RRTStarPlanner(map_builder)
+planner = AStarPlanner(map_builder)
 path = planner.plan(start, goal)
 
 if path:

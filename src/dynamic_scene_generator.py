@@ -65,16 +65,19 @@ class DynamicSceneGenerator:
             (0, 'add_obstacle', {'pos': (300, 200), 'size': (80, 100)}),
             (0, 'add_obstacle', {'pos': (450, 400), 'size': (90, 90)}),
             (0, 'add_obstacle', {'pos': (600, 300), 'size': (75, 110)}),
-            (0, 'add_obstacle', {'pos': (450, 200), 'size': (40, 40)}),
-            (0, 'add_obstacle', {'pos': (500, 200), 'size': (40, 40)}),
-            (0, 'add_obstacle', {'pos': (550, 200), 'size': (40, 40)}),
-            (0, 'add_obstacle', {'pos': (600, 200), 'size': (40, 40)}),
-            (0, 'add_obstacle', {'pos': (650, 200), 'size': (40, 40)}),
-            (0, 'add_obstacle', {'pos': (280, 320), 'size': (40, 40)}),
-            (0, 'add_obstacle', {'pos': (280, 380), 'size': (40, 40)}),
-            (0, 'add_obstacle', {'pos': (280, 440), 'size': (40, 40)}),
-            (0, 'add_obstacle', {'pos': (280, 500), 'size': (40, 40)}),
-            (0, 'add_obstacle', {'pos': (280, 560), 'size': (40, 40)}),
+            
+            
+            #(0, 'add_obstacle', {'pos': (450, 200), 'size': (40, 40)}),
+            #(0, 'add_obstacle', {'pos': (500, 200), 'size': (40, 40)}),
+            #(0, 'add_obstacle', {'pos': (550, 200), 'size': (40, 40)}),
+            #(0, 'add_obstacle', {'pos': (600, 200), 'size': (40, 40)}),
+            #(0, 'add_obstacle', {'pos': (650, 200), 'size': (40, 40)}),
+            #(0, 'add_obstacle', {'pos': (280, 320), 'size': (40, 40)}),
+            #(0, 'add_obstacle', {'pos': (280, 380), 'size': (40, 40)}),
+            #(0, 'add_obstacle', {'pos': (280, 440), 'size': (40, 40)}),
+            #(0, 'add_obstacle', {'pos': (280, 500), 'size': (40, 40)}),
+            #(0, 'add_obstacle', {'pos': (280, 560), 'size': (40, 40)}),
+            
             
 
             

@@ -12,7 +12,7 @@ print("SEGMENTATION DEBUG")
 print("="*70)
 
 # Load the test image (Windows compatible path)
-image_path = os.path.join("..", "src", "data", "test_images", "ladi_01027_segmented.jpg")
+image_path = os.path.join("..", "src", "data", "test_images", "ladi_00297.jpg")
 #image_path = os.path.join("..", "src", "data", "test_images", "current_scene.jpg")
 #image_path = os.path.join("..", "src", "data", "test_images", "tello_current.jpg")
 print(f"\nLoading image: {image_path}")

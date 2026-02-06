@@ -36,8 +36,8 @@ SEGMENTATION_CONFIDENCE_THRESHOLD = 0.6
 GRID_RESOLUTION = 0.1  # 10 cm per cell
 
 # Map dimensions (cells)
-MAP_WIDTH = 100
-MAP_HEIGHT = 100
+MAP_WIDTH = 960
+MAP_HEIGHT = 720
 
 # Obstacle inflation radius (cells) - adds safety buffer around obstacles
 # SET TO 0 to avoid false collision detection
@@ -51,7 +51,7 @@ MAP_UPDATE_THRESHOLD = 0.15  # 15% change triggers replanning
 # =====================================================
 # Available planning algorithms
 PLANNING_ALGORITHMS = ['astar', 'rrt_star', 'greedy']
-DEFAULT_ALGORITHM = 'rrt_star'
+DEFAULT_ALGORITHM = 'astar'
 
 # A* configuration
 ASTAR_DIAGONAL_ALLOWED = True
@@ -73,7 +73,7 @@ GREEDY_STEP_SIZE = 1  # cells
 # =====================================================
 # Enable dynamic replanning when environment changes
 # SET TO FALSE for simpler navigation
-DYNAMIC_REPLANNING_ENABLED = False
+STATIC_IMAGE_MODE = True
 
 # Minimum time between replanning attempts (seconds)
 MIN_REPLAN_INTERVAL = 2.0
@@ -187,7 +187,7 @@ if __name__ == "__main__":
     print(f"✓ Grid resolution: {GRID_RESOLUTION}m per cell")
     print(f"✓ Map size: {MAP_WIDTH}x{MAP_HEIGHT} cells")
     print(f"✓ System update rate: {SYSTEM_UPDATE_RATE} Hz")
-    print(f"✓ Dynamic replanning: {DYNAMIC_REPLANNING_ENABLED}")
+    print(f"✓ Dynamic replanning: {not STATIC_IMAGE_MODE}")
     print(f"✓ Obstacle inflation: {OBSTACLE_INFLATION_RADIUS} cells")
     print("=" * 50)
     print("Configuration loaded successfully!")
