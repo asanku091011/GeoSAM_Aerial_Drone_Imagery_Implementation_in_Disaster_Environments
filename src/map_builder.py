@@ -257,19 +257,19 @@ class MapBuilder:
             for i in range(len(path) - 1):
                 pt1 = (int(path[i][0] * scale), int(path[i][1] * scale))
                 pt2 = (int(path[i+1][0] * scale), int(path[i+1][1] * scale))
-                cv2.line(vis, pt1, pt2, (0, 255, 0), 2)  # Green path
+                cv2.line(vis, pt1, pt2, (0, 255, 0), 10)  # Green path
         
         # Draw start position
         if start is not None:
             center = (int(start[0] * scale), int(start[1] * scale))
-            cv2.circle(vis, center, scale * 2, (255, 0, 0), -1)  # Blue start
-            cv2.circle(vis, center, scale * 2, (0, 0, 0), 1)  # Black outline
+            cv2.circle(vis, center, scale * 10, (255, 0, 0), -1)  # Blue start
+            cv2.circle(vis, center, scale * 10, (0, 0, 0), 1)  # Black outline
         
         # Draw goal position
         if goal is not None:
             center = (int(goal[0] * scale), int(goal[1] * scale))
-            cv2.circle(vis, center, scale * 2, (0, 0, 255), -1)  # Red goal
-            cv2.circle(vis, center, scale * 2, (0, 0, 0), 1)  # Black outline
+            cv2.circle(vis, center, scale * 10, (0, 0, 255), -1)  # Red goal
+            cv2.circle(vis, center, scale * 10, (0, 0, 0), 1)  # Black outline
         
         return vis
     

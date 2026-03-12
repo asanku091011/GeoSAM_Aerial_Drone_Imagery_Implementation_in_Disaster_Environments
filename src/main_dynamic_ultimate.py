@@ -1,9 +1,10 @@
 """
-ULTIMATE Dynamic Navigation System
-- Coordinate system fixed ✓
-- Dynamic image reloading ✓
-- Smooth 360° paths ✓
-- Real-time replanning ✓
+ULTIMATE Dynamic Navigation System - FINAL
+✓ Square obstacle marking 20 units ahead
+✓ Matches robot dot visualization size
+✓ No backup (BACKUP_DISTANCE = 0)
+✓ Position tracking fixed
+✓ Interactive mode selection at startup
 """
 
 import sys
@@ -12,113 +13,140 @@ import cv2
 import numpy as np
 import os
 import subprocess
+import json
 
 os.environ["OPENCV_FFMPEG_LOGLEVEL"] = "-8"
 
 import config
 
-# Import all system components
-from dynamic_image_input import DynamicImageInput  # ← DYNAMIC IMAGES!
-from segmentation import GeoSAMSegmenter
+from dynamic_image_input import DynamicImageInput
 from proper_sam_segmenter import AccurateSAMSegmenter
+from mobilesam_segmenter import MobileSAMSegmenter
 from map_builder import MapBuilder
-from astar import AStarPlanner  # ← SMOOTH 360° PATHS!
+from astar import AStarPlanner
 from rrt_star import RRTStarPlanner
 from greedy import GreedyPlanner
-from path_converter_smooth import SmoothPathConverter  # ← SMOOTH CONVERTER!
+from path_converter_smooth import SmoothPathConverter
 from data_logger import DataLogger
 
 
 class DynamicNavigationSystem:
-    """
-    Ultimate real-time dynamic navigation with:
-    - Continuous replanning
-    - Dynamic image updates
-    - Smooth 360° paths
-    - Correct coordinate system
-    """
+    
+    ROBOT_WIDTH_CELLS = 10
+    BACKUP_DISTANCE = 0  # No backup
     
     def __init__(self):
         print("\n" + "="*70)
-        print("🚁 ULTIMATE DYNAMIC NAVIGATION SYSTEM")
+        print("🚁 ULTIMATE DYNAMIC NAVIGATION SYSTEM - FINAL")
         print("="*70)
         print("Features:")
-        print("  ✓ Dynamic image reloading")
-        print("  ✓ Smooth 360° path planning")
-        print("  ✓ Fixed coordinate system")
-        print("  ✓ Real-time replanning")
+        print("  ✓ Static mode: plan ONCE, follow until done")
+        print("  ✓ Ultrasonic: marks obstacle square 20 units ahead")
+        print("  ✓ Smooth paths: minimum 5-unit movements")
         print("="*70)
         print("\nInitializing components...\n")
         
-        # DYNAMIC IMAGE INPUT
-        self.image_input = DynamicImageInput("data/test_images/current_scene.jpg")
+        self.image_input = DynamicImageInput("data/test_images/"+config.TEST_IMAGE+".jpg")
         
-        # Segmentation
-        #old one -> self.segmenter = GeoSAMSegmenter()
-        self.segmenter = AccurateSAMSegmenter()
+        print("="*70)
+        print("⏳ PRELOADING SEGMENTATION MODELS")
+        print("="*70)
         
-        # Map builder
+        print("\n[1/2] Preloading Full SAM...")
+        self.sam_segmenter = AccurateSAMSegmenter()
+        sam_load_start = time.time()
+        self.sam_segmenter.load_model()
+        sam_load_time = time.time() - sam_load_start
+        print(f"  ✓ Full SAM ready ({sam_load_time:.1f}s)")
+        
+        print("\n[2/2] Preloading MobileSAM...")
+        self.mobilesam_segmenter = MobileSAMSegmenter()
+        mobile_load_start = time.time()
+        self.mobilesam_segmenter.load_model()
+        mobile_load_time = time.time() - mobile_load_start
+        print(f"  ✓ MobileSAM ready ({mobile_load_time:.1f}s)")
+        
+        if config.SEGMENTATION_MODEL == 'sam':
+            self.segmenter = self.sam_segmenter
+            self.current_model = 'sam'
+        elif config.SEGMENTATION_MODEL == 'mobilesam':
+            self.segmenter = self.mobilesam_segmenter
+            self.current_model = 'mobilesam'
+        else:
+            self.segmenter = config.get_segmenter()
+            self.current_model = config.SEGMENTATION_MODEL
+        
+        total_load_time = sam_load_time + mobile_load_time
+        print("="*70)
+        print(f"✓ ALL MODELS PRELOADED! Total: {total_load_time:.1f}s")
+        print("="*70)
+        
         self.map_builder = MapBuilder()
-        
-        # SMOOTH PATH CONVERTER (360° angles)
         self.path_converter = SmoothPathConverter(self.map_builder, unit_scale=1.0)
         
-        # Data logger
         config.create_directories()
         self.logger = DataLogger()
         
-        # Create planners - SMOOTH A*!
         self.planners = {
-            'astar': AStarPlanner(self.map_builder),  # ← SMOOTH!
+            'astar': AStarPlanner(self.map_builder),
             'rrt_star': RRTStarPlanner(self.map_builder),
             'greedy': GreedyPlanner(self.map_builder)
         }
         
-        # State tracking
         self.current_algorithm = config.DEFAULT_ALGORITHM
         self.current_position_grid = None
-        self.current_heading = 0.0  # Continuous angles now!
+        self.current_heading = 0.0
         self.goal_position = None
         self.iteration = 0
         self.commands_sent = []
-        self.robot_connected = False  # Will be checked during setup
-        self.current_path = None  # Store path between iterations
+        self.robot_connected = False
         
-        # Visualization
+        self.planned_path = None
+        self.remaining_commands = []
+        self.path_planned = False
+        
+        self.last_ultrasonic_distance = None
+        self.obstacle_detected_count = 0
+        self.ultrasonic_history = []
+        self.detected_obstacles = set()  # Tracks obstacle keys to prevent duplicates
+        self.permanent_obstacles = []  # Stores actual obstacle cell positions for persistence
+        
         self.vis_width = 640
         self.vis_height = 480
         
-        print("✓ All components initialized\n")
+        print("\n✓ All components initialized\n")
+    
+    def switch_segmenter(self, model_type):
+        if model_type == 'sam' and self.current_model != 'sam':
+            self.segmenter = self.sam_segmenter
+            self.current_model = 'sam'
+            return True
+        elif model_type == 'mobilesam' and self.current_model != 'mobilesam':
+            self.segmenter = self.mobilesam_segmenter
+            self.current_model = 'mobilesam'
+            return True
+        return False
     
     def setup(self):
-        """Setup system."""
         print("Setting up system...")
         
-        print("\n[1/4] Loading dynamic image...")
+        print("\n[1/3] Loading dynamic image...")
         if not self.image_input.connect():
-            print("✗ Image loading failed")
             return False
         self.image_input.start_stream()
         
-        print("\n[2/4] Loading segmentation model...")
-        if not self.segmenter.load_model():
-            print("✗ Model loading failed")
-            return False
-        
-        print("\n[3/4] Verifying image input...")
+        print("\n[2/3] Verifying image input...")
         test_frame = self.image_input.get_frame()
         if test_frame is None:
-            print("✗ Cannot get frames")
             return False
         
-        print("\n[4/4] Checking robot connection...")
+        print("\n[3/3] Checking robot connection...")
         self._check_robot_connection()
         
         print("\n✓ System setup complete!")
         return True
     
     def _check_robot_connection(self):
-        """Check if Raspberry Pi robot is reachable."""
         try:
             result = subprocess.run(
                 ['ping', '-n', '1', '-w', '1000', '10.42.0.1'],
@@ -127,236 +155,345 @@ class DynamicNavigationSystem:
             )
             
             if result.returncode == 0:
-                print("  ✓ Robot Pi reachable at 10.42.0.1")
-                print("  ✓ Commands will be sent via SCP")
+                print("  ✓ Robot Pi reachable")
                 self.robot_connected = True
             else:
-                print("  ⚠ Robot Pi not responding")
-                print("  ⚠ Running in SIMULATION mode (no actual robot)")
+                print("  ⚠ SIMULATION mode")
                 self.robot_connected = False
-                
-        except Exception as e:
-            print(f"  ⚠ Connection check failed: {e}")
-            print("  ⚠ Running in SIMULATION mode")
+        except:
             self.robot_connected = False
     
+    def _fetch_robot_status(self):
+        if not self.robot_connected:
+            return None
+        
+        try:
+            import tempfile
+            
+            with tempfile.NamedTemporaryFile(mode='r', delete=False, suffix='.json') as temp_file:
+                temp_path = temp_file.name
+            
+            remote_status = "asanku@10.42.0.1:/home/asanku/Documents/RSEF/status/robot_status.json"
+            
+            result = subprocess.run(
+                ['scp', remote_status, temp_path],
+                capture_output=True,
+                timeout=2
+            )
+            
+            if result.returncode == 0:
+                with open(temp_path, 'r') as f:
+                    status = json.load(f)
+                os.unlink(temp_path)
+                return status
+            else:
+                if os.path.exists(temp_path):
+                    os.unlink(temp_path)
+                return None
+        except:
+            if 'temp_path' in locals() and os.path.exists(temp_path):
+                os.unlink(temp_path)
+            return None
+    
+    def _handle_ultrasonic_obstacle(self, status):
+        ultrasonic_cm = status.get('ultrasonic_cm')
+        obstacle_detected = status.get('obstacle_detected', False)
+        
+        self.last_ultrasonic_distance = ultrasonic_cm
+        if ultrasonic_cm is not None:
+            self.ultrasonic_history.append(ultrasonic_cm)
+            if len(self.ultrasonic_history) > 10:
+                self.ultrasonic_history.pop(0)
+        
+        if not obstacle_detected:
+            return False
+        
+        print("\n" + "="*70)
+        print("🚨 ULTRASONIC OBSTACLE DETECTED!")
+        print("="*70)
+        print(f"  Distance: {ultrasonic_cm:.1f}cm")
+        print(f"  Robot heading: {self.current_heading:.1f}°")
+        print(f"  Robot position: {self.current_position_grid}")
+        print("="*70)
+        
+        # Calculate heading in radians
+        heading_rad = np.radians(self.current_heading)
+        
+        # Mark obstacle square 20 units ahead of robot
+        OBSTACLE_DISTANCE_AHEAD = 20
+        OBSTACLE_SIZE = 8  # Same as robot visualization (START_RADIUS)
+        
+        # Calculate obstacle center
+        obstacle_center_x = self.current_position_grid[0] + OBSTACLE_DISTANCE_AHEAD * np.cos(heading_rad)
+        obstacle_center_y = self.current_position_grid[1] + OBSTACLE_DISTANCE_AHEAD * np.sin(heading_rad)
+        
+        obstacle_center_x = int(round(obstacle_center_x))
+        obstacle_center_y = int(round(obstacle_center_y))
+        
+        # Clamp to bounds
+        obstacle_center_x = max(0, min(obstacle_center_x, self.map_builder.width - 1))
+        obstacle_center_y = max(0, min(obstacle_center_y, self.map_builder.height - 1))
+        
+        # Don't mark same obstacle twice
+        obstacle_key = (obstacle_center_x // 10, obstacle_center_y // 10)
+        if obstacle_key in self.detected_obstacles:
+            print(f"  ⚠ Already marked, skipping")
+            return False
+        
+        self.detected_obstacles.add(obstacle_key)
+        self.obstacle_detected_count += 1
+        
+        print(f"\n🧱 MARKING OBSTACLE SQUARE:")
+        print(f"  Center: ({obstacle_center_x}, {obstacle_center_y})")
+        print(f"  Distance ahead: {OBSTACLE_DISTANCE_AHEAD} units")
+        print(f"  Size: {OBSTACLE_SIZE}×{OBSTACLE_SIZE} cells")
+        
+        # Mark square region
+        cells_marked = 0
+        half_size = OBSTACLE_SIZE
+        
+        for dx in range(-half_size, half_size + 1):
+            for dy in range(-half_size, half_size + 1):
+                mark_x = obstacle_center_x + dx
+                mark_y = obstacle_center_y + dy
+                
+                if (0 <= mark_x < self.map_builder.width and 
+                    0 <= mark_y < self.map_builder.height):
+                    self.map_builder.grid[mark_y, mark_x] = 0
+                    cells_marked += 1
+                    
+                    if hasattr(self, 'current_mask'):
+                        self.current_mask[mark_y, mark_x] = 0
+        
+        print(f"  ✓ Marked {cells_marked} cells")
+        
+        # Store obstacle cells permanently for re-application after resegmentation
+        obstacle_cells = []
+        for dx in range(-half_size, half_size + 1):
+            for dy in range(-half_size, half_size + 1):
+                mark_x = obstacle_center_x + dx
+                mark_y = obstacle_center_y + dy
+                
+                if (0 <= mark_x < self.map_builder.width and 
+                    0 <= mark_y < self.map_builder.height):
+                    obstacle_cells.append((mark_x, mark_y))
+        
+        self.permanent_obstacles.append({
+            'cells': obstacle_cells,
+            'center': (obstacle_center_x, obstacle_center_y),
+            'size': OBSTACLE_SIZE
+        })
+        
+        print(f"  ✓ Stored {len(obstacle_cells)} cells for permanent obstacle #{self.obstacle_detected_count}")
+        
+        # No backup (BACKUP_DISTANCE = 0)
+        # Robot stays at current position
+        
+        print(f"\n⚠ FORCING REPLAN!")
+        
+        return True
+    
+    def _reapply_permanent_obstacles(self):
+        """
+        Reapply all ultrasonic-detected obstacles to current mask and grid.
+        Called after resegmentation to maintain obstacle persistence.
+        """
+        if not self.permanent_obstacles:
+            return
+        
+        total_cells = 0
+        for obstacle in self.permanent_obstacles:
+            for cell_x, cell_y in obstacle['cells']:
+                if (0 <= cell_x < self.map_builder.width and 
+                    0 <= cell_y < self.map_builder.height):
+                    self.map_builder.grid[cell_y, cell_x] = 0
+                    total_cells += 1
+                    
+                    if hasattr(self, 'current_mask'):
+                        self.current_mask[cell_y, cell_x] = 0
+        
+        if total_cells > 0:
+            print(f"  ✓ Reapplied {len(self.permanent_obstacles)} permanent obstacles ({total_cells} cells)")
+    
+    def _send_backup_command(self):
+        # Not used when BACKUP_DISTANCE = 0
+        return True
+    
     def set_navigation_goal(self, start_grid, goal_grid):
-        """Set start and goal positions."""
         self.current_position_grid = start_grid
         self.goal_position = goal_grid
         
         print(f"\n✓ Algorithm: {self.current_algorithm}")
-        print(f"Navigation goal set:")
+        print(f"Navigation goal:")
         print(f"  Start: {start_grid}")
         print(f"  Goal: {goal_grid}")
-        print(f"  (Will be validated after first segmentation)")
-        # Check if start and goal are free
+    
     def _validate_and_shift_positions(self):
-        """
-        Validate start and goal positions after segmentation.
-        Shift them if they're on obstacles.
-        """
-        print("\n[Validating start/goal positions after segmentation]")
+        print("\n[Validating positions]")
         
-        # Shift start if needed
         startx, starty = self.current_position_grid
         original_start = self.current_position_grid
         
         while not self.map_builder.is_cell_free(startx, starty):
-            print(f"  ⚠ Start {(startx, starty)} is on obstacle, shifting to {(startx+2, starty+2)}")
             startx += 2
             starty += 2
-            
-            # Safety check - don't go off the map
             if startx >= self.map_builder.width or starty >= self.map_builder.height:
-                print(f"  ✗ Cannot find free start position near {original_start}")
                 return False
         
         self.current_position_grid = (startx, starty)
         
         if (startx, starty) != original_start:
-            print(f"  ✓ Start shifted: {original_start} → {(startx, starty)}")
+            print(f"  ✓ Start: {original_start} → {(startx, starty)}")
         else:
-            print(f"  ✓ Start is free: {(startx, starty)}")
+            print(f"  ✓ Start: {(startx, starty)}")
         
-        # Shift goal if needed
         goalx, goaly = self.goal_position
         original_goal = self.goal_position
         
         while not self.map_builder.is_cell_free(goalx, goaly):
-            print(f"  ⚠ Goal {(goalx, goaly)} is on obstacle, shifting to {(goalx-2, goaly-2)}")
             goalx -= 2
             goaly -= 2
-            
-            # Safety check - don't go off the map or past start
-            if goalx <= startx or goaly <= starty or goalx < 0 or goaly < 0:
-                print(f"  ✗ Cannot find free goal position near {original_goal}")
+            if goalx < 0 or goaly < 0:
                 return False
         
         self.goal_position = (goalx, goaly)
         
         if (goalx, goaly) != original_goal:
-            print(f"  ✓ Goal shifted: {original_goal} → {(goalx, goaly)}")
+            print(f"  ✓ Goal: {original_goal} → {(goalx, goaly)}")
         else:
-            print(f"  ✓ Goal is free: {(goalx, goaly)}")
-        
-        print(f"\nFinal validated positions:")
-        print(f"  Start: {self.current_position_grid}")
-        print(f"  Goal: {self.goal_position}")
+            print(f"  ✓ Goal: {(goalx, goaly)}")
         
         return True
 
     def run(self):
-        """Main navigation loop."""
         print("\n" + "="*70)
-        print("🤖 STARTING DYNAMIC NAVIGATION")
+        print("🤖 STATIC MODE NAVIGATION")
         print("="*70)
-        print("Controls:")
-        print("  SPACE - Pause/Resume")
-        print("  Q - Quit")
-        print("  R - Force replan")
-        print("\nSettings:")
-        print(f"  Static image mode: {config.STATIC_IMAGE_MODE}")
-        print("\nOptimizations:")
-        if config.STATIC_IMAGE_MODE:
-            print("  ✓ Static image - segment once, reuse mask")
-            print("  ✓ Replanning only after moves (not after turns)")
-        else:
-            print("  ✓ Dynamic images - resegment as needed")
-            print("  ✓ Replanning only after moves (not after turns)")
+        print("Controls: SPACE=pause Q=quit R=replan 1=SAM 2=MobileSAM")
+        print("Behavior: Plan once → Execute → Only replan if obstacle")
         print("="*70)
         
         paused = False
-        last_command_was_turn = False
         positions_validated = False
-        static_segmentation_done = False  # Track if we've done initial segmentation for static mode
+        initial_segmentation_done = False
         
         try:
             while True:
                 self.iteration += 1
                 
-                # Check keyboard
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord('q'):
-                    print("\n⚠ User requested quit")
                     break
                 elif key == ord(' '):
                     paused = not paused
-                    print(f"\n{'⏸ PAUSED' if paused else '▶ RESUMED'}")
                     continue
                 elif key == ord('r'):
-                    print("\n🔄 Force replan requested")
-                    last_command_was_turn = False
-                    if config.STATIC_IMAGE_MODE:
-                        static_segmentation_done = False  # Allow resegmentation in static mode
+                    self.path_planned = False
+                    self.remaining_commands = []
+                elif key == ord('1'):
+                    if self.switch_segmenter('sam'):
+                        self.path_planned = False
+                        positions_validated = False
+                elif key == ord('2'):
+                    if self.switch_segmenter('mobilesam'):
+                        self.path_planned = False
+                        positions_validated = False
                 
                 if paused:
                     time.sleep(0.1)
                     continue
                 
-                # Print iteration header
                 print(f"\n{'='*70}")
                 print(f"ITERATION {self.iteration}")
                 print(f"{'='*70}")
-                print(f"Current position: {self.current_position_grid}")
-                print(f"Current heading: {self.current_heading:.1f}°")
-                print(f"Goal position: {self.goal_position}")
+                print(f"Pos: {self.current_position_grid} | Head: {self.current_heading:.1f}° | Goal: {self.goal_position}")
                 
-                # Determine if we need to capture/segment
-                need_segmentation = False
+                # Check ultrasonic
+                robot_status = self._fetch_robot_status()
+                if robot_status:
+                    if self._handle_ultrasonic_obstacle(robot_status):
+                        self.path_planned = False
+                        self.remaining_commands = []
                 
-                if config.STATIC_IMAGE_MODE:
-                    # Static mode: only segment once at the beginning
-                    if not static_segmentation_done:
-                        need_segmentation = True
-                        print("\n📷 First segmentation for static image...")
-                    else:
-                        print("\n♻️ Reusing static segmentation mask...")
-                else:
-                    # Dynamic mode: skip resegmentation only after turns
-                    if last_command_was_turn:
-                        print("\n⏭ Skipping capture/replan (just turned, same position)")
-                    else:
-                        need_segmentation = True
-                
-                if need_segmentation:
-                    # STEP 1: Capture and segment
+                # Initial segmentation (once) OR resegment every iteration if dynamic mode
+                if not initial_segmentation_done:
+                    print("\n📷 Initial segmentation...")
                     if not self._capture_and_segment():
                         continue
                     
-                    if config.STATIC_IMAGE_MODE:
-                        static_segmentation_done = True
+                    initial_segmentation_done = True
                     
-                    # VALIDATE POSITIONS AFTER FIRST SEGMENTATION
                     if not positions_validated:
                         if not self._validate_and_shift_positions():
-                            print("✗ Could not find valid start/goal positions")
+                            print("✗ Invalid positions")
                             break
                         positions_validated = True
+                
+                # DYNAMIC MODE: Resegment every iteration
+                elif not config.STATIC_IMAGE_MODE:
+                    print("\n📷 Dynamic resegmentation...")
+                    if not self._capture_and_segment():
+                        continue
                     
-                    # STEP 2: Plan smooth 360° path
+                    # Reapply ultrasonic-detected obstacles to new segmentation
+                    self._reapply_permanent_obstacles()
+                    
+                    # Force replan with updated map
+                    self.path_planned = False
+                    self.remaining_commands = []
+                    print("  → Forcing replan after resegmentation")
+                
+                # Plan path (once or after obstacle)
+                if not self.path_planned or not self.remaining_commands:
+                    print("\n🗺️ Planning...")
+                    
+                    # Revalidate if replanning
+                    if self.path_planned:
+                        if not self._validate_and_shift_positions():
+                            print("✗ Cannot replan")
+                            break
+                    
                     path = self._plan_path()
                     if not path:
-                        print("⚠ Planning failed")
+                        print("✗ No path")
                         break
                     
-                    # Store path for next iteration
-                    self.current_path = path
-                else:
-                    # Reuse existing path (or replan if just turned in dynamic mode)
-                    if last_command_was_turn:
-                        # Just reuse the path
-                        path = self.current_path
-                    else:
-                        # Position changed, replan with existing mask
-                        path = self._plan_path()
-                        if not path:
-                            print("⚠ Planning failed")
-                            break
-                        self.current_path = path
+                    self.planned_path = path
+                    
+                    all_commands = self._convert_path(path)
+                    if not all_commands:
+                        print("✗ No commands")
+                        break
+                    
+                    self.remaining_commands = all_commands.copy()
+                    self.path_planned = True
+                    
+                    print(f"✓ {len(self.remaining_commands)} commands queued")
                 
-                # Calculate distance to goal
+                # Check goal
                 if self.current_position_grid and self.goal_position:
                     dx = self.goal_position[0] - self.current_position_grid[0]
                     dy = self.goal_position[1] - self.current_position_grid[1]
-                    dist_to_goal = np.sqrt(dx**2 + dy**2)
-                    print(f"Distance to goal: {dist_to_goal:.1f} cells")
+                    dist = np.sqrt(dx**2 + dy**2)
                     
-                    # Check if goal reached
-                    if dist_to_goal < 2:
-                        print("\n" + "="*70)
-                        print("🎉 GOAL REACHED!")
-                        print("="*70)
+                    if dist < 5:
+                        print("\n🎉 GOAL REACHED!")
                         break
                 
-                # STEP 3: Convert to smooth commands
-                commands = self._convert_path(path)
-                if not commands:
-                    print("⚠ No commands generated")
-                    break
-                
-                # STEP 4: Send FIRST command only
-                if not self._send_first_command(commands):
+                # Execute next command
+                if not self.remaining_commands:
+                    print("\n⚠ No commands left, replanning")
+                    self.path_planned = False
                     continue
                 
-                # Track what type of command we just sent
-                last_command_was_turn = commands[0].startswith('turn(')
-                if config.STATIC_IMAGE_MODE:
-                    print(f"  → Using static mask (no resegmentation)")
-                elif last_command_was_turn:
-                    print(f"  → Next iteration will skip replan (just turned)")
-                else:
-                    print(f"  → Next iteration will replan (moved to new position)")
+                cmd = self.remaining_commands.pop(0)
+                print(f"\n➤ {cmd} ({len(self.remaining_commands)} left)")
                 
-                # STEP 5: Update robot state
-                self._update_robot_state(commands[0], path)
+                self._send_command(cmd)
+                self._update_robot_state(cmd, self.planned_path)
+                self._visualize_state(self.planned_path)
                 
-                # STEP 6: Visualize
-                self._visualize_state(path)
-                
-                # Wait before next iteration
-                print("⏳ Waiting before next iteration...")
-                time.sleep(2)
+                time.sleep(0.5)
                 
         except KeyboardInterrupt:
             print("\n⚠ Interrupted")
@@ -365,88 +502,60 @@ class DynamicNavigationSystem:
             self._print_summary()
     
     def _capture_and_segment(self):
-        """Capture image and segment."""
-        print("\n[Step 1/5] Capturing and segmenting image...")
-        
-        # Get frame (automatically reloads if file changed!)
         frame = self.image_input.get_frame()
         if frame is None:
-            print("  ✗ No frame")
             return False
         
         self.current_image = frame
         
-        # Segment
         mask = self.segmenter.segment(frame)
         if mask is None:
-            print("  ✗ Segmentation failed")
             return False
         
         self.current_mask = mask
-        
-        # Update map
         self.map_builder.update_from_segmentation(mask)
         
-        # Print stats
         stats = self.segmenter.get_statistics(mask)
-        print(f"  Segmentation: {stats['safe_percentage']:.1f}% safe")
+        print(f"  ✓ {stats['safe_percentage']:.1f}% safe")
         
         return True
     
     def _plan_path(self):
-        """Plan smooth 360° path."""
-        print("\n[Step 2/5] Planning path using {self.current_algorithm}...")
-        
         planner = self.planners[self.current_algorithm]
         path = planner.plan(self.current_position_grid, self.goal_position)
         
         if path:
-            print(f"✓ Path planned: {len(path)} waypoints")
+            print(f"  ✓ {len(path)} waypoints")
         
         return path
     
     def _convert_path(self, path):
-        """Convert to smooth 360° commands."""
-        print("\n[Step 3/5] Converting path to commands...")
-        
         commands = self.path_converter.convert_path_to_commands(
-            path, 
-            start_heading=self.current_heading
+            path, start_heading=self.current_heading
         )
         commands = self.path_converter.optimize_commands(commands)
         
-        print(f"✓ Generated {len(commands)} commands")
-        
         return commands
     
-    def _send_first_command(self, commands):
-        """Send only first command to robot via SCP."""
-        print("\n[Step 4/5] Sending first command to robot...")
-        
-        if not commands:
-            return False
-        
-        first_cmd = commands[0]
-        
-        # Save to local file
+    def _send_command(self, command):
         try:
             os.makedirs("outputs", exist_ok=True)
             with open("outputs/robot_path.txt", 'w') as f:
-                f.write(first_cmd + '\n')
-        except Exception as e:
-            print(f"  ✗ Local save error: {e}")
-            return False
+                f.write(command + '\n')
+        except:
+            pass
         
-        # Send to Raspberry Pi via SCP
+        if not self.robot_connected:
+            self.commands_sent.append(command)
+            return True
+        
         try:
             import tempfile
             
-            # Create temporary file with command
             with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as temp_file:
-                temp_file.write(first_cmd + '\n')
+                temp_file.write(command + '\n')
                 temp_path = temp_file.name
             
-            # SCP to Pi
             remote_path = "asanku@10.42.0.1:/home/asanku/Documents/RSEF/movements/robot_path.txt"
             
             result = subprocess.run(
@@ -455,91 +564,45 @@ class DynamicNavigationSystem:
                 timeout=5
             )
             
-            # Clean up temp file
             os.unlink(temp_path)
             
-            if result.returncode == 0:
-                print(f"✓ Sent to Pi: {first_cmd}")
-                self.commands_sent.append(first_cmd)
-                time.sleep(1)
-                return True
-            else:
-                print(f"  ⚠ SCP failed (return code {result.returncode})")
-                print(f"  Command saved locally, robot may not receive it")
-                self.commands_sent.append(first_cmd)
-                return True  # Continue anyway
-                
-        except subprocess.TimeoutExpired:
-            print(f"  ⚠ SCP timeout (Pi not reachable?)")
-            print(f"  Command: {first_cmd}")
-            self.commands_sent.append(first_cmd)
-            return True  # Continue in simulation mode
-            
-        except Exception as e:
-            print(f"  ⚠ Send error: {str(e)}")
-            print(f"  Command: {first_cmd}")
-            self.commands_sent.append(first_cmd)
-            return True  # Continue anyway
+            self.commands_sent.append(command)
+            return True
+        except:
+            self.commands_sent.append(command)
+            return True
     
     def _update_robot_state(self, command, path):
-        """
-        Update robot state with FIXED coordinate system.
-        Handles both 8-directional AND continuous angles!
-        """
-        print("\n[Step 5/5] Updating robot state...")
-        
         if command.startswith('turn('):
-            # Extract angle (can be float now!)
-            angle_str = command[5:-1]
-            angle = float(angle_str)
+            angle = float(command[5:-1])
             self.current_heading = angle
-            print(f"  Robot turned to {angle:.1f}°")
         
         elif command.startswith('move('):
-            # Extract distance
-            distance_str = command[5:-1]
-            distance = float(distance_str)
+            distance = float(command[5:-1])
             
-            # Convert heading to movement vector (IMAGE coordinates!)
-            # For 360° smooth paths, use trigonometry
             heading_rad = np.radians(self.current_heading)
             
-            # CRITICAL: Image coordinates
-            # 0° = East (right, +X)
-            # 90° = South (down, +Y)
-            # Standard trig works if we use this convention!
+            # IMPORTANT: move(N) means "move N units along the current heading"
+            # This is ALREADY the correct distance - just apply it!
             dx = distance * np.cos(heading_rad)
             dy = distance * np.sin(heading_rad)
             
-            # Update position
             old_pos = self.current_position_grid
-            new_x = old_pos[0] + dx
-            new_y = old_pos[1] + dy
+            new_x = int(round(old_pos[0] + dx))
+            new_y = int(round(old_pos[1] + dy))
             
-            # Round to grid
-            new_x = int(round(new_x))
-            new_y = int(round(new_y))
-            
-            # Clamp
             new_x = max(0, min(new_x, self.map_builder.width - 1))
             new_y = max(0, min(new_y, self.map_builder.height - 1))
             
             self.current_position_grid = (new_x, new_y)
-            
-            print(f"  Robot moved {distance:.1f} cells at {self.current_heading:.1f}°")
-            print(f"  Direction: dx={dx:+.1f}, dy={dy:+.1f}")
-            print(f"  Position: {old_pos} → {self.current_position_grid}")
     
     def _visualize_state(self, path):
-        """Create 4-window visualization."""
-        # Window 1: Current image
         if hasattr(self, 'current_image'):
             img_vis = cv2.resize(self.current_image, (self.vis_width, self.vis_height))
-            cv2.putText(img_vis, f"Iteration {self.iteration}", (10, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-            cv2.imshow("1. Current Image", img_vis)
+            cv2.putText(img_vis, f"Iter {self.iteration}", (10, 30),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.imshow("1. Image", img_vis)
         
-        # Window 2: Segmentation
         if hasattr(self, 'current_mask'):
             seg_vis = self.segmenter.visualize_segmentation(
                 self.current_image, self.current_mask
@@ -547,117 +610,131 @@ class DynamicNavigationSystem:
             seg_vis = cv2.resize(seg_vis, (self.vis_width, self.vis_height))
             cv2.imshow("2. Segmentation", seg_vis)
         
-        # Window 3: Navigation map (FIXED - resize to match other windows!)
         map_vis = self.map_builder.visualize(
             path=path,
             start=self.current_position_grid,
             goal=self.goal_position
         )
-        # Resize to match other windows
         map_vis = cv2.resize(map_vis, (self.vis_width, self.vis_height), 
                             interpolation=cv2.INTER_NEAREST)
         
-        cv2.putText(map_vis, f"Heading: {self.current_heading:.1f}°", (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-        cv2.imshow("3. Navigation Map", map_vis)
+        cv2.putText(map_vis, f"Head: {self.current_heading:.1f}", (10, 30),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
         
-        # Window 4: Progress tracker
-        tracker = np.zeros((400, 600, 3), dtype=np.uint8)
+        if self.last_ultrasonic_distance is not None:
+            ultra_color = (0, 0, 255) if self.last_ultrasonic_distance < 20 else (0, 255, 0)
+            cv2.putText(map_vis, f"{self.last_ultrasonic_distance:.1f}cm", (10, 60),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, ultra_color, 2)
+        
+        cv2.imshow("3. Map", map_vis)
+        
+        tracker = np.zeros((450, 600, 3), dtype=np.uint8)
         tracker[:] = (40, 40, 40)
         
-        y_pos = 40
-        cv2.putText(tracker, f"ITERATION: {self.iteration}", (20, y_pos),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
+        y = 40
+        cv2.putText(tracker, f"ITER: {self.iteration}", (20, y),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
         
-        y_pos += 35
-        # Show robot connection status
-        if self.robot_connected:
-            status_text = "Robot: CONNECTED"
-            status_color = (0, 255, 0)
-        else:
-            status_text = "Robot: SIMULATION"
-            status_color = (100, 100, 255)
-        cv2.putText(tracker, status_text, (20, y_pos),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, status_color, 2)
+        y += 35
+        cv2.putText(tracker, f"Queue: {len(self.remaining_commands)}", (20, y),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)
         
-        y_pos += 35
-        cv2.putText(tracker, f"Position: {self.current_position_grid}", (20, y_pos),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
+        y += 35
+        cv2.putText(tracker, f"Obstacles: {self.obstacle_detected_count}", (20, y),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 128, 0), 2)
         
-        y_pos += 30
-        cv2.putText(tracker, f"Heading: {self.current_heading:.1f}°", (20, y_pos),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
-        
-        y_pos += 30
-        if self.current_position_grid and self.goal_position:
-            dx = self.goal_position[0] - self.current_position_grid[0]
-            dy = self.goal_position[1] - self.current_position_grid[1]
-            dist = np.sqrt(dx**2 + dy**2)
-            cv2.putText(tracker, f"Distance to goal: {dist:.1f}", (20, y_pos),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 1)
-            
-            # Progress bar
-            y_pos += 50
-            total_dist = np.sqrt(
-                (self.goal_position[0] - 10)**2 + 
-                (self.goal_position[1] - 10)**2
-            )
-            progress = max(0, min(1, 1 - dist / total_dist))
-            
-            cv2.rectangle(tracker, (20, y_pos), (580, y_pos + 30), (100, 100, 100), 2)
-            bar_width = int(560 * progress)
-            cv2.rectangle(tracker, (20, y_pos), (20 + bar_width, y_pos + 30), (0, 255, 0), -1)
-            
-            cv2.putText(tracker, f"{progress*100:.0f}%", (270, y_pos + 22),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-        
-        y_pos += 60
-        cv2.putText(tracker, f"Commands sent: {len(self.commands_sent)}", (20, y_pos),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
-        
-        # Recent commands
-        y_pos += 40
-        cv2.putText(tracker, "Recent commands:", (20, y_pos),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150, 150, 150), 1)
-        
-        for i, cmd in enumerate(self.commands_sent[-5:]):
-            y_pos += 25
-            cv2.putText(tracker, f"  {cmd}", (30, y_pos),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (180, 180, 180), 1)
-        
-        cv2.imshow("4. Progress Tracker", tracker)
+        cv2.imshow("4. Progress", tracker)
     
     def _print_summary(self):
-        """Print navigation summary."""
         print("\n" + "="*70)
-        print("Navigation Summary:")
+        print("Summary:")
         print(f"  Iterations: {self.iteration}")
-        print(f"  Commands sent: {len(self.commands_sent)}")
-        print(f"  Final position: {self.current_position_grid}")
+        print(f"  Commands: {len(self.commands_sent)}")
+        print(f"  Obstacles: {self.obstacle_detected_count}")
         print("="*70)
-        print("Press any key to close visualization windows...")
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         
-        print("\nShutting down...")
         self.image_input.disconnect()
-        print("✓ Shutdown complete")
+
+
+def select_mode():
+    """
+    Interactive mode selection at startup.
+    Allows user to choose preset configurations without editing config.py
+    """
+    print("\n" + "="*70)
+    print("🎯 MODE SELECTION")
+    print("="*70)
+    print("\nAvailable modes:")
+    print("  1. Static + testearthquake + MobileSAM (STATIC WITH EARTHQUAKE)")
+    print("  2. Dynamic + current_scene + MobileSAM (DYANMIC WITH IMAGE GENERATOR)")
+    print("  3. Static + DJIDrone + MobileSAM (STATIC WITH DRONE IMAGERY)")
+    print("  4. Static + testearthquake + Full SAM (STATIC EARTHQUAKE WITH FULL SAM MODEL)")
+    print("  5. Custom (use current config.py settings)")
+    print("="*70)
+    
+    while True:
+        try:
+            choice = input("\nSelect mode [1-5]: ").strip()
+            
+            if choice == '1':
+                config.STATIC_IMAGE_MODE = True
+                config.TEST_IMAGE = "testearthquake"
+                config.SEGMENTATION_MODEL = 'mobilesam'
+                print("\n✓ Mode 1: Static + testearthquake + MobileSAM")
+                break
+            elif choice == '2':
+                config.STATIC_IMAGE_MODE = False
+                config.TEST_IMAGE = "current_scene"
+                config.SEGMENTATION_MODEL = 'mobilesam'
+                print("\n✓ Mode 2: Dynamic + current_scene + MobileSAM")
+                break
+            elif choice == '3':
+                config.STATIC_IMAGE_MODE = True
+                config.TEST_IMAGE = "DJIDrone"
+                config.SEGMENTATION_MODEL = 'mobilesam'
+                print("\n✓ Mode 3: Static + DJIDrone + MobileSAM")
+                break
+            elif choice == '4':
+                config.STATIC_IMAGE_MODE = True
+                config.TEST_IMAGE = "testearthquake"
+                config.SEGMENTATION_MODEL = 'sam'
+                print("\n✓ Mode 4: Static + testearthquake + Full SAM")
+                break
+            elif choice == '5':
+                print("\n✓ Mode 5: Using config.py settings")
+                print(f"  STATIC_IMAGE_MODE = {config.STATIC_IMAGE_MODE}")
+                print(f"  TEST_IMAGE = {config.TEST_IMAGE}")
+                print(f"  SEGMENTATION_MODEL = {config.SEGMENTATION_MODEL}")
+                break
+            else:
+                print("❌ Invalid choice. Please enter 1-5.")
+        except KeyboardInterrupt:
+            print("\n\n⚠ Cancelled")
+            sys.exit(0)
+        except:
+            print("❌ Invalid input. Please enter 1-5.")
+    
+    print(f"\nFinal configuration:")
+    print(f"  Image: data/test_images/{config.TEST_IMAGE}.jpg")
+    print(f"  Mode: {'Static (segment once)' if config.STATIC_IMAGE_MODE else 'Dynamic (resegment every iteration)'}")
+    print(f"  Model: {config.SEGMENTATION_MODEL.upper()}")
 
 
 def main():
-    """Main entry point."""
-    # Create system
+    # Interactive mode selection BEFORE initializing system
+    select_mode()
+    
     system = DynamicNavigationSystem()
     
-    # Setup
     if not system.setup():
-        print("✗ Setup failed")
         return 1
+    
     start = (75, 75)
     goal = (config.MAP_WIDTH-75, config.MAP_HEIGHT-75)
     system.set_navigation_goal(start, goal)
     
-    # Run navigation
     system.run()
     
     return 0

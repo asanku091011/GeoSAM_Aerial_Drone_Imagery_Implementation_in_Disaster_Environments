@@ -178,7 +178,7 @@ if __name__ == "__main__":
     
     if segmenter.load_model():
         import os
-        test_image_path = "data/test_images/current_scene.jpg"
+        test_image_path = "data/test_images/testearthquake.jpg"
         
         if not os.path.exists(test_image_path):
             print(f"✗ Test image not found: {test_image_path}")

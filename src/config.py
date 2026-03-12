@@ -18,8 +18,24 @@ DRONE_FPS = 30
 # SEGMENTATION CONFIGURATION
 # =====================================================
 # Path to the Geo-SAM model weights (you must download these)
-GEOSAM_CHECKPOINT = r"C:\Users\sanku\Documents\RSEF\models\sam_vit_h_4b8939.pth"
+# =====================================================
+# MODEL SELECTION - EASY SWITCHING!
+# =====================================================
+SEGMENTATION_MODEL = 'mobilesam'  # Options: 'fast', 'mobilesam', 'sam'
+
+# Model checkpointsc
+MOBILESAM_CHECKPOINT = r"..\models\mobile_sam.pt"  # 40 MB model
+
+
+GEOSAM_CHECKPOINT = r"..\models\sam_vit_h_4b8939.pth"
 GEOSAM_MODEL_PATH = "models/geosam_weights.pth"
+
+# === SEGMENTATION SETTINGS ===
+USE_FAST_SEGMENTER = False  # Set to True for fast CV-based segmentation (no AI model)
+STATIC_IMAGE_MODE = True                            # Set to False for accurate SAM segmentation (slower)
+TEST_IMAGE = "testearthquake"
+#TEST_IMAGE = "current_scene"
+#TEST_IMAGE = "DJIDrone"
 
 # Image processing settings
 SEGMENTATION_INPUT_SIZE = (512, 512)  # Resize input for faster processing
@@ -65,7 +81,7 @@ RRT_GOAL_SAMPLE_RATE = 0.1  # 10% chance to sample goal
 RRT_SEARCH_RADIUS = 10  # cells for neighbor search
 
 # Greedy configuration
-GREEDY_MAX_ITERATIONS = 500
+GREEDY_MAX_ITERATIONS = 1000
 GREEDY_STEP_SIZE = 1  # cells
 
 # =====================================================
@@ -73,7 +89,6 @@ GREEDY_STEP_SIZE = 1  # cells
 # =====================================================
 # Enable dynamic replanning when environment changes
 # SET TO FALSE for simpler navigation
-STATIC_IMAGE_MODE = True
 
 # Minimum time between replanning attempts (seconds)
 MIN_REPLAN_INTERVAL = 2.0
@@ -151,6 +166,34 @@ def create_directories():
     for directory in REQUIRED_DIRS:
         os.makedirs(directory, exist_ok=True)
     print("✓ All required directories created/verified")
+
+def get_segmenter():
+    """
+    Get the appropriate segmenter based on SEGMENTATION_MODEL setting.
+    
+    Returns:
+        Segmenter instance
+    """
+    if SEGMENTATION_MODEL == 'fast':
+        print("Using: Fast Segmenter (fastest, good for real-time)")
+        from fast_segmenter import FastSegmenter
+        return FastSegmenter()
+    
+    elif SEGMENTATION_MODEL == 'mobilesam':
+        print("Using: MobileSAM (~10x faster than SAM, good for demos)")
+        from mobilesam_segmenter import MobileSAMSegmenter
+        return MobileSAMSegmenter()
+    
+    elif SEGMENTATION_MODEL == 'sam':
+        print("Using: Full SAM (slowest, highest accuracy)")
+        from proper_sam_segmenter import AccurateSAMSegmenter
+        return AccurateSAMSegmenter()
+    
+    else:
+        print(f"⚠ Unknown model: {SEGMENTATION_MODEL}")
+        print("  Defaulting to Fast Segmenter")
+        from fast_segmenter import FastSegmenter
+        return FastSegmenter()
 
 # =====================================================
 # RASPBERRY PI 5 OPTIMIZATION

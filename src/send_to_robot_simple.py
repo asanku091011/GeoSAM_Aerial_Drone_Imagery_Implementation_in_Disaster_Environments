@@ -12,7 +12,7 @@ import tempfile
 from pathlib import Path
 
 # Configuration - CHANGE THESE TO MATCH YOUR SETUP
-PI_HOSTNAME = "192.168.1.10"
+PI_HOSTNAME = "10.42.0.1"
 PI_USERNAME = "asanku"
 PI_COMMANDS_DIR = "/home/asanku/Documents/RSEF/movements"
 COMMANDS_FILE = "robot_path.txt"  # In outputs folder
