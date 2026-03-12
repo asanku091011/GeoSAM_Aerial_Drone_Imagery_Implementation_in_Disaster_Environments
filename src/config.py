@@ -165,7 +165,7 @@ def create_directories():
     """Create all required directories if they don't exist."""
     for directory in REQUIRED_DIRS:
         os.makedirs(directory, exist_ok=True)
-    print("✓ All required directories created/verified")
+    print("All required directories created/verified")
 
 def get_segmenter():
     """
@@ -190,7 +190,7 @@ def get_segmenter():
         return AccurateSAMSegmenter()
     
     else:
-        print(f"⚠ Unknown model: {SEGMENTATION_MODEL}")
+        print(f"Unknown model: {SEGMENTATION_MODEL}")
         print("  Defaulting to Fast Segmenter")
         from fast_segmenter import FastSegmenter
         return FastSegmenter()
@@ -225,12 +225,12 @@ if __name__ == "__main__":
     print("Disaster Navigation System - Configuration")
     print("=" * 50)
     create_directories()
-    print(f"✓ Drone enabled: {DRONE_ENABLED}")
-    print(f"✓ Default algorithm: {DEFAULT_ALGORITHM}")
-    print(f"✓ Grid resolution: {GRID_RESOLUTION}m per cell")
-    print(f"✓ Map size: {MAP_WIDTH}x{MAP_HEIGHT} cells")
-    print(f"✓ System update rate: {SYSTEM_UPDATE_RATE} Hz")
-    print(f"✓ Dynamic replanning: {not STATIC_IMAGE_MODE}")
-    print(f"✓ Obstacle inflation: {OBSTACLE_INFLATION_RADIUS} cells")
+    print(f"Drone enabled: {DRONE_ENABLED}")
+    print(f"Default algorithm: {DEFAULT_ALGORITHM}")
+    print(f"Grid resolution: {GRID_RESOLUTION}m per cell")
+    print(f"Map size: {MAP_WIDTH}x{MAP_HEIGHT} cells")
+    print(f"System update rate: {SYSTEM_UPDATE_RATE} Hz")
+    print(f"Dynamic replanning: {not STATIC_IMAGE_MODE}")
+    print(f"Obstacle inflation: {OBSTACLE_INFLATION_RADIUS} cells")
     print("=" * 50)
     print("Configuration loaded successfully!")
