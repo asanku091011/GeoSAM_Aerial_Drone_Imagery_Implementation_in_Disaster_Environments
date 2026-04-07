@@ -397,6 +397,15 @@ class DynamicNavigationSystem:
         else:
             print(f"  Goal: {(goalx, goaly)}")
         
+        # Store INITIAL validated positions (only the first time)
+        # These are used for visualization at the end
+        if not hasattr(self, 'initial_validated_start'):
+            self.initial_validated_start = self.current_position_grid
+            self.initial_validated_goal = self.goal_position
+            print(f"  Stored initial positions for visualization:")
+            print(f"    initial_validated_start = {self.initial_validated_start}")
+            print(f"    initial_validated_goal = {self.initial_validated_goal}")
+        
         return True
 
     def run(self):
@@ -712,10 +721,172 @@ class DynamicNavigationSystem:
         print(f"  Commands: {len(self.commands_sent)}")
         print(f"  Obstacles: {self.obstacle_detected_count}")
         print("="*70)
+        
+        # Save visualization files
+        self._save_visualizations()
+        
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         
         self.image_input.disconnect()
+    
+    def _save_visualizations(self):
+        """Save four visualization images to outputs folder"""
+        print("\nSaving visualizations...")
+        
+        # Create output directory
+        output_dir = r"C:\Projects\RSEF\outputs\visualizations"
+        os.makedirs(output_dir, exist_ok=True)
+        
+        if not hasattr(self, 'current_image') or not hasattr(self, 'current_mask'):
+            print("  No visualizations to save (no image/mask available)")
+            return
+        
+        # 1. Save original image
+        original_path = os.path.join(output_dir, "1_original_image.jpg")
+        cv2.imwrite(original_path, self.current_image)
+        print(f"  Saved: {original_path}")
+        print(f"    Image size: {self.current_image.shape[1]}x{self.current_image.shape[0]}")
+        
+        # 2. Save black and white segmentation mask
+        mask_bw = (self.current_mask * 255).astype(np.uint8)
+        mask_path = os.path.join(output_dir, "2_segmentation_mask.jpg")
+        cv2.imwrite(mask_path, mask_bw)
+        print(f"  Saved: {mask_path}")
+        
+        # 3. Save green/red overlay (FULL RESOLUTION)
+        overlay = self.segmenter.visualize_segmentation(self.current_image, self.current_mask)
+        overlay_path = os.path.join(output_dir, "3_segmentation_overlay.jpg")
+        cv2.imwrite(overlay_path, overlay)
+        print(f"  Saved: {overlay_path}")
+        
+        # 4. Save overlay with all three paths (FULL RESOLUTION)
+        paths_overlay = self._create_paths_visualization()
+        paths_path = os.path.join(output_dir, "4_paths_comparison.jpg")
+        cv2.imwrite(paths_path, paths_overlay)
+        print(f"  Saved: {paths_path}")
+        print(f"    Paths overlay size: {paths_overlay.shape[1]}x{paths_overlay.shape[0]}")
+        
+        print("All visualizations saved!")
+    
+    def _create_paths_visualization(self):
+        """Create visualization with all three path planning algorithms"""
+        # Start with the segmentation overlay at FULL RESOLUTION
+        vis = self.segmenter.visualize_segmentation(self.current_image, self.current_mask).copy()
+        
+        print(f"  Visualization canvas size: {vis.shape[1]}x{vis.shape[0]}")
+        print(f"  Map grid size: {self.map_builder.width}x{self.map_builder.height}")
+        
+        # CRITICAL: Use the exact same start/goal that were used during the FIRST navigation planning
+        # These are stored when positions are first validated
+        if hasattr(self, 'initial_validated_start') and hasattr(self, 'initial_validated_goal'):
+            start = self.initial_validated_start
+            goal = self.initial_validated_goal
+            print(f"  Using initial validated positions:")
+            print(f"    Start (grid): {start}")
+            print(f"    Goal (grid): {goal}")
+        else:
+            # This shouldn't happen, but fallback just in case
+            print("  WARNING: No initial validated positions found, using defaults")
+            start = (75, 75)
+            goal = (config.MAP_WIDTH-75, config.MAP_HEIGHT-75)
+            print(f"    Start (grid): {start}")
+            print(f"    Goal (grid): {goal}")
+        
+        # Calculate scale factors for converting grid coordinates to image pixel coordinates
+        # Grid coordinates are in the range [0, map_width] x [0, map_height]
+        # Image coordinates are in the range [0, image_width] x [0, image_height]
+        scale_x = vis.shape[1] / self.map_builder.width
+        scale_y = vis.shape[0] / self.map_builder.height
+        
+        print(f"  Scale factors: x={scale_x:.3f}, y={scale_y:.3f}")
+        
+        # Convert start/goal to pixel coordinates for verification
+        start_px = (int(start[0] * scale_x), int(start[1] * scale_y))
+        goal_px = (int(goal[0] * scale_x), int(goal[1] * scale_y))
+        print(f"    Start (pixels): {start_px}")
+        print(f"    Goal (pixels): {goal_px}")
+        
+        # Plan paths with all three algorithms
+        print("  Generating paths for comparison...")
+        
+        # A* path (Blue)
+        astar_planner = self.planners['astar']
+        astar_path = astar_planner.plan(start, goal)
+        if astar_path:
+            print(f"    A*: {len(astar_path)} waypoints")
+            for i in range(len(astar_path) - 1):
+                pt1 = (int(astar_path[i][0] * scale_x), int(astar_path[i][1] * scale_y))
+                pt2 = (int(astar_path[i+1][0] * scale_x), int(astar_path[i+1][1] * scale_y))
+                cv2.line(vis, pt1, pt2, (255, 0, 0), 3)  # Blue, thicker line
+        else:
+            print(f"    A*: No path found")
+        
+        # RRT* path (Purple) - increase iterations
+        rrt_planner = self.planners['rrt_star']
+        if hasattr(rrt_planner, 'max_iterations'):
+            original_max_iter = rrt_planner.max_iterations
+            rrt_planner.max_iterations = 5000  # Much higher iteration count
+            rrt_path = rrt_planner.plan(start, goal)
+            rrt_planner.max_iterations = original_max_iter  # Restore
+        else:
+            rrt_path = rrt_planner.plan(start, goal)
+        
+        if rrt_path:
+            print(f"    RRT*: {len(rrt_path)} waypoints")
+            for i in range(len(rrt_path) - 1):
+                pt1 = (int(rrt_path[i][0] * scale_x), int(rrt_path[i][1] * scale_y))
+                pt2 = (int(rrt_path[i+1][0] * scale_x), int(rrt_path[i+1][1] * scale_y))
+                cv2.line(vis, pt1, pt2, (128, 0, 128), 3)  # Purple, thicker line
+        else:
+            print(f"    RRT*: No path found")
+        
+        # Greedy path (Yellow) - increase iterations
+        greedy_planner = self.planners['greedy']
+        if hasattr(greedy_planner, 'max_iterations'):
+            original_max_iter = greedy_planner.max_iterations
+            greedy_planner.max_iterations = 5000  # Much higher iteration count
+            greedy_path = greedy_planner.plan(start, goal)
+            greedy_planner.max_iterations = original_max_iter  # Restore
+        elif hasattr(greedy_planner, 'max_iter'):
+            original_max_iter = greedy_planner.max_iter
+            greedy_planner.max_iter = 5000  # Much higher iteration count
+            greedy_path = greedy_planner.plan(start, goal)
+            greedy_planner.max_iter = original_max_iter  # Restore
+        else:
+            greedy_path = greedy_planner.plan(start, goal)
+        
+        if greedy_path:
+            print(f"    Greedy: {len(greedy_path)} waypoints")
+            for i in range(len(greedy_path) - 1):
+                pt1 = (int(greedy_path[i][0] * scale_x), int(greedy_path[i][1] * scale_y))
+                pt2 = (int(greedy_path[i+1][0] * scale_x), int(greedy_path[i+1][1] * scale_y))
+                cv2.line(vis, pt1, pt2, (0, 255, 255), 3)  # Yellow, thicker line
+        else:
+            print(f"    Greedy: No path found")
+        
+        # Draw start and goal markers
+        start_pt = (int(start[0] * scale_x), int(start[1] * scale_y))
+        goal_pt = (int(goal[0] * scale_x), int(goal[1] * scale_y))
+        cv2.circle(vis, start_pt, 12, (0, 255, 0), -1)  # Green start, larger
+        cv2.circle(vis, goal_pt, 12, (0, 0, 255), -1)   # Red goal, larger
+        
+        # Add legend with background
+        legend_x = 10
+        legend_y = 30
+        line_height = 30
+        
+        # Draw semi-transparent background for legend
+        cv2.rectangle(vis, (legend_x - 5, legend_y - 25), (legend_x + 180, legend_y + 70), (0, 0, 0), -1)
+        cv2.rectangle(vis, (legend_x - 5, legend_y - 25), (legend_x + 180, legend_y + 70), (255, 255, 255), 2)
+        
+        cv2.putText(vis, "A* (Blue)", (legend_x, legend_y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+        legend_y += line_height
+        cv2.putText(vis, "RRT* (Purple)", (legend_x, legend_y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (128, 0, 128), 2)
+        legend_y += line_height
+        cv2.putText(vis, "Greedy (Yellow)", (legend_x, legend_y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+        
+        return vis
 
 
 def select_mode():

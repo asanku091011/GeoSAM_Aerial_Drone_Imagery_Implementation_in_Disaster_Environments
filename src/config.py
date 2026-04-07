@@ -38,7 +38,7 @@ TEST_IMAGE = "testearthquake"
 #TEST_IMAGE = "DJIDrone"
 
 # Image processing settings
-SEGMENTATION_INPUT_SIZE = (512, 512)  # Resize input for faster processing
+SEGMENTATION_INPUT_SIZE = (600, 449)  # Resize input for faster processing
 SAFE_CLASS_LABEL = 1  # Label for navigable terrain
 UNSAFE_CLASS_LABEL = 0  # Label for obstacles/unsafe areas
 
